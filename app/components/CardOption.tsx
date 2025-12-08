@@ -1,4 +1,7 @@
-// app/components/CardOption.tsx
+"use client";
+
+import { motion } from "framer-motion";
+
 export default function CardOption({
   text,
   onClick,
@@ -9,15 +12,28 @@ export default function CardOption({
   disabled?: boolean;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
       disabled={disabled}
-      className={`p-4 w-1/6 h-52 rounded-lg shadow-2xl transition-all transform hover:-translate-y-1
-        ${disabled ? "opacity-40 pointer-events-none" : "bg-brand-light hover:bg-brand-primary-dark"}`}
+      initial={{ rotateY: 180, opacity: 0 }}
+      animate={{ rotateY: 0, opacity: 1 }}
+      whileHover={{ scale: disabled ? 1 : 1.05 }}
+      transition={{ duration: 0.4 }}
+      className={`
+        w-40 h-56 
+        rounded-xl 
+        shadow-xl 
+        border border-gray-700
+        flex items-center justify-center
+        text-center font-semibold text-white
+        transition-all
+        ${disabled ? "opacity-40 pointer-events-none" : "bg-gray-800 hover:bg-gray-700"}
+      `}
+      style={{
+        perspective: 1000,
+      }}
     >
-      <div className="h-full flex items-center justify-center text-center">
-        <span>{text}</span>
-      </div>
-    </button>
+      <span className="px-2">{text}</span>
+    </motion.button>
   );
 }

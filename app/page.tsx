@@ -26,7 +26,7 @@ export default function Home() {
         <div className="w-full md:w-1/2 flex justify-center items-center">
           <div className="flex flex-col items-center space-y-6">
             {/* BOTÃO GRANDE - JOGAR */}
-            <Link href="/levels">
+            <Link href="/levels/1">ru
               <div
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
