@@ -126,7 +126,7 @@ export default function Page() {
           transition={{ type: "spring", stiffness: 120, damping: 12 }}
           className="relative w-5/7 h-22 mt-4 flex items-center justify-center shadow-2xl"
           style={{
-            backgroundImage: "url('/textures/papel_antigo_letreiro.jpg')",
+            backgroundImage: "url('/textures/letreiro.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat"
