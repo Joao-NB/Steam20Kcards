@@ -1,30 +1,20 @@
 "use client";
 
 import { useState } from "react";
-// 🛑 ALTERADO: Importando useRouter para navegação
 import { useParams, useRouter } from "next/navigation"; 
 import { questions, Question, Option } from "@/app/data/questions";
-import { Settings } from "lucide-react"; // Usando Settings diretamente
-
-/**
- * Página da fase (/levels/[id])
- * ...
- */
+import CardOption from "@/app/components/CardOption";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Page() {
   const { id } = useParams();
   const phase = Number(id) || 1;
-  
-  // 🛑 NOVO: Inicialização do router
   const router = useRouter(); 
-  
-  // 🛑 CONFIGURAÇÃO: Defina o número total de fases do seu jogo.
-  const TOTAL_PHASES = 3; 
 
-  // filtra perguntas da fase atual
+  const TOTAL_PHASES = 3; 
   const phaseQuestions: Question[] = questions.filter((q) => q.phase === phase);
 
-  // ... (Estados e lógica de handleOptionClick permanecem os mesmos) ...
   const [current, setCurrent] = useState(0);
   const [lives, setLives] = useState(3);
   const [removedOptions, setRemovedOptions] = useState<number[]>([]);
@@ -32,7 +22,6 @@ export default function Page() {
 
   const question = phaseQuestions[current];
 
-  // Handler ao clicar numa opção
   function handleOptionClick(optionIndex: number) {
     if (disableAll) return;
     const option: Option | undefined = question?.options[optionIndex];
@@ -40,7 +29,6 @@ export default function Page() {
 
     if (option.correct) {
       setDisableAll(true);
-      // CORRIGIDO: Uso de template literals com crases (`)
       window.alert(`✅ Correto!\n\n${option.feedback || ""}`);
 
       if (current + 1 < phaseQuestions.length) {
@@ -48,20 +36,13 @@ export default function Page() {
         setRemovedOptions([]);
         setDisableAll(false);
       } else {
-        // 🛑 LÓGICA DE PROGRESSÃO DE LEVEL FOI ADICIONADA AQUI
         const nextPhase = phase + 1;
-        
         if (nextPhase <= TOTAL_PHASES) {
-            // CORRIGIDO: Uso de template literals com crases (`)
-            window.alert(`🎉 Você concluiu a Fase ${phase}! Preparando para a Fase ${nextPhase}...`);
-            // CORRIGIDO: Uso de template literals com crases (`)
-            router.push(`/levels/${nextPhase}`); 
+          window.alert(`🎉 Você concluiu a Fase ${phase}! Preparando para a Fase ${nextPhase}...`);
+          router.push(`/levels/${nextPhase}`); 
         } else {
-            // Todas as fases concluídas
-            // CORRIGIDO: Uso de template literals com crases (`)
-            window.alert(`🏆 Parabéns! Você concluiu todas as ${TOTAL_PHASES} fases!`);
-            setDisableAll(true);
-            // Opcional: router.push('/');
+          window.alert(`🏆 Parabéns! Você concluiu todas as ${TOTAL_PHASES} fases!`);
+          setDisableAll(true);
         }
       }
     } else {
@@ -75,7 +56,6 @@ export default function Page() {
           return 3;
         } else {
           setRemovedOptions((prevArr) => [...prevArr, optionIndex]);
-          // CORRIGIDO: Uso de template literals com crases (`)
           window.alert(`❌ Incorreto.\n\n${option.feedback || ""}`);
           return novo;
         }
@@ -83,57 +63,86 @@ export default function Page() {
     }
   }
 
-  // Se não houver perguntas para a fase
   if (phaseQuestions.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center font-game">
         <p>Nenhuma pergunta encontrada para a fase {phase}.</p>
       </div>
     );
   }
 
-  // --- Render principal (NÃO ALTERADO) ---
   return (
-    <div key={phase} className="flex min-h-screen w-dvw justify-between gap-4" style={{ backgroundImage: "url('/texture.jpg')" }}>
-      {/* Lado esquerdo — vidas (AGORA COM Settings) */}
-      <aside className="flex-1 flex flex-col justify-center pl-2">
-        <div className="flex flex-col justify-evenly gap-2">
-          {[1, 2, 3].map((v) => (
-            <div
-              key={v}
-              className="flex items-center justify-center h-16 w-16"
-            >
-              <Settings // Componente de ícone
-                size={64}
-                // CORRIGIDO: Uso de template literals com crases (`)
-                className={`transition-colors ${v <= lives ? "text-brand-primary" : "text-brand-background/40"}`}
-              />
-            </div>
-          ))}
-        </div>
-      </aside>
+    <div
+      key={phase}
+      className="flex min-h-screen w-dvw justify-between gap-4 font-game"
+      style={{ backgroundImage: "url('/texture.jpg')" }}
+    >
+      {/* Lado esquerdo — vidas com imagem de fundo animada */}
+      <aside className="flex-1 relative flex flex-col justify-center gap-6 overflow-visible">
+  {/* Fundo das engrenagens vindo da esquerda */}
+  <motion.div
+    initial={{ x: -300, opacity: 0 }}
+    animate={{ x: 0, opacity: 1 }}
+    transition={{ type: "spring", stiffness: 100, damping: 15, duration: 1.2 }}
+    className="absolute top-1/2 -translate-y-1/2 left-[-180px] z-0" // saiu mais pra esquerda
+  >
+    <Image
+      src="/images/fundo_engrenagens.png"
+      alt="fundo engrenagens"
+      width={320}   // largura menor
+      height={240}  // altura menor
+      priority
+    />
+  </motion.div>
+
+  {/* Engrenagens animadas */}
+  {Array.from({ length: 3 }).map((_, v) => (
+    <motion.img
+      key={v}
+      src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
+      alt="gear"
+      className="h-20 w-20 relative z-10"
+      initial={{ x: -200, opacity: 0 }}
+      animate={{ x: 0, opacity: 1, rotate: v < lives ? 360 : 0 }}
+      transition={{ type: "spring", stiffness: 120, damping: 12, duration: 1 }}
+    />
+  ))}
+</aside>
+
 
       {/* Área principal */}
-      <main className="flex-4 flex flex-col justify-between items-center py-6 ">
-        <div className="bg-brand-background text-brand-gray w-5/6 flex items-center justify-center h-16 rounded-sm text-2xl">
-          {question?.question}
-        </div>
+      <main className="flex-4 flex flex-col justify-between items-center py-6 w-full">
+        {/* Letreiro da pergunta estilo steampunk pendurado */}
+        <motion.div
+          initial={{ y: -200, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 120, damping: 12 }}
+          className="relative w-5/7 h-22 mt-4 flex items-center justify-center shadow-2xl"
+          style={{
+            backgroundImage: "url('/textures/papel_antigo_letreiro.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat"
+          }}
+        >
+          <span className="text-black text-xl font-semibold text-center">{question?.question}</span>
+        </motion.div>
 
-        <div className="w-full flex flex-wrap justify-evenly items-center text-brand-gray gap-4 mt-6 px-6">
-          {question.options.map((opt: Option, index: number) => {
+        {/* Cards */}
+        <div className="w-full flex flex-wrap justify-center items-center gap-6 mt-8 px-6 relative">
+          {question.options.map((opt, index) => {
             const removed = removedOptions.includes(index);
-            return removed ? null : (
-              <button
+            if (removed) return null;
+
+            return (
+              <CardOption
                 key={opt.id}
+                text={opt.text}
                 onClick={() => handleOptionClick(index)}
                 disabled={disableAll}
-                // CORRIGIDO: Uso de template literals com crases (`)
-                className={`p-4 w-1/6 h-58 rounded-xl shadow-2xl transition transform hover:-translate-y-1 ${removed ? "opacity-40 pointer-events-none" : "bg-brand-light hover:bg-brand-primary-dark"}`}              
-              >
-                <div className="h-full flex items-center justify-center text-center px-2">
-                  <span>{opt.text}</span>
-                </div>
-              </button>
+                index={index}
+                initialRotate={0}
+              />
             );
           })}
         </div>
