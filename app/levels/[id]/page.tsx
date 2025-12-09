@@ -25,8 +25,9 @@ export default function Page() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [isWrong, setIsWrong] = useState(false);
   const [isPhaseFinished, setIsPhaseFinished] = useState(false);
-
   const [feedback, setFeedback] = useState("");
+  const [focusedCard, setFocusedCard] = useState<number | null>(null);
+
   const question = phaseQuestions[current];
   const nextPhase = phase + 1;
 
@@ -55,7 +56,6 @@ export default function Page() {
     } else {
       setLives((prev) => {
         const novo = prev - 1;
-
         if (novo <= 0) {
           setCurrent(0);
           setRemovedOptions([]);
@@ -80,10 +80,14 @@ export default function Page() {
     );
   }
 
+  const dropAnimation = { y: 0, opacity: 1 };
+  const initialDrop = { y: -200, opacity: 0 };
+  const dropTransition = { type: "spring", stiffness: 120, damping: 12 };
+
   return (
     <div
       key={phase}
-      className="flex min-h-screen w-dvw justify-between gap-4 font-game"
+      className="flex min-h-screen w-dvw justify-between gap-4 font-game overflow-hidden relative"
       style={{ backgroundImage: "url('/texture.jpg')" }}
     >
       {/* VIDAS */}
@@ -97,8 +101,8 @@ export default function Page() {
           <Image
             src="/images/fundo_engrenagens.png"
             alt="fundo engrenagens"
-            width={320}
-            height={240}
+            width={305}
+            height={200}
             priority
           />
         </motion.div>
@@ -117,7 +121,7 @@ export default function Page() {
       </aside>
 
       {/* PERGUNTA + OPÇÕES */}
-      <main className="flex-4 flex flex-col justify-between items-center py-6 w-full">
+      <main className="flex-4 flex flex-col justify-between items-center py-6 w-full relative">
         {/* Diálogos de feedback */}
         <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
           <DialogContent
@@ -172,12 +176,41 @@ export default function Page() {
           </DialogContent>
         </Dialog>
 
+        {/* Correntes esquerda e direita */}
+        <motion.div
+          initial={initialDrop}
+          animate={dropAnimation}
+          transition={{ ...dropTransition, delay: 0 }}
+          className="absolute z-30 top-0 left-[calc(50%-380px)]"
+        >
+          <Image
+            src="/images/corrente_esquerda.png"
+            alt="Corrente esquerda"
+            width={80}
+            height={300}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={initialDrop}
+          animate={dropAnimation}
+          transition={{ ...dropTransition, delay: 0 }}
+          className="absolute z-30 top-0 right-[calc(50%-380px)]"
+        >
+          <Image
+            src="/images/corrente_direita.png"
+            alt="Corrente direita"
+            width={100}
+            height={350}
+          />
+        </motion.div>
+
         {/* Letreiro da pergunta */}
         <motion.div
-          initial={{ y: -200, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 120, damping: 12 }}
-          className="relative w-5/7 h-22 mt-4 flex items-center justify-center shadow-2xl"
+          initial={initialDrop}
+          animate={dropAnimation}
+          transition={dropTransition}
+          className="relative w-5/7 h-22 mt-4 flex items-center justify-center shadow-2xl z-20"
           style={{
             backgroundImage: "url('/textures/letreiro.jpg')",
             backgroundSize: "cover",
@@ -190,9 +223,16 @@ export default function Page() {
           </span>
         </motion.div>
 
-        <div className="w-full flex flex-wrap justify-center items-center gap-6 mt-8 px-6">
+        {/* Cartas em leque */}
+        <div className="w-full flex justify-center items-end gap-0 mt-8 px-6 relative h-80 overflow-visible">
           {question.options.map((opt, index) => {
             if (removedOptions.includes(index)) return null;
+
+            const total = question.options.length;
+            const fanSpread = 30;
+            const startAngle = -fanSpread / 2;
+            const rotate = startAngle + (fanSpread / (total - 1)) * index;
+
             return (
               <CardOption
                 key={opt.id}
@@ -200,6 +240,24 @@ export default function Page() {
                 onClick={() => handleOptionClick(index)}
                 disabled={disableAll}
                 index={index}
+                initialRotate={rotate}
+                isFocused={focusedCard === index}
+                setFocusedCard={setFocusedCard}
+                // animação inicial de entrada das cartas
+                initialAnimation={{
+                  y: 200,
+                  rotate: rotate,
+                  opacity: 0,
+                  animateY: 0,
+                  animateOpacity: 1,
+                  animateRotate: rotate,
+                  delay: index * 0.2,
+                }}
+                // adicionando delay uniforme para flip no hover
+                hoverAnimation={{
+                  rotateY: 180, // flip para cima
+                  transition: { duration: 0.6, delay: 0 } // mesmo delay para todas
+                }}
               />
             );
           })}

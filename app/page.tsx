@@ -16,7 +16,7 @@ export default function Home() {
         {/* IMAGEM LATERAL MAIOR */}
         <div
           className={`
-            w-full md:w-1/2 bg-center bg-no-repeat bg-contain
+            w-full md:w-3/5 bg-center bg-no-repeat bg-contain
             transition-transform duration-500
             ${hoverEffect ? "scale-110" : "scale-100"}
           `}
@@ -24,7 +24,7 @@ export default function Home() {
         ></div>
 
         {/* BOTÕES */}
-        <div className="w-full md:w-1/2 flex justify-center items-center font-game">
+        <div className="w-full md:w-2/5 flex justify-center items-center font-game">
           <div className="flex flex-col items-center space-y-6">
             {/* BOTÃO GRANDE - JOGAR */}
             <Link href="/levels/1">
@@ -32,8 +32,8 @@ export default function Home() {
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
                 className="
-                  border-2 border-brand-primary font-bold text-2xl text-brand-primary
-                  px-8 py-5 w-56 text-center rounded-b-4xl cursor-pointer
+                  border-2 border-brand-primary font-bold text-4xl text-brand-primary
+                  px-14 py-8 w-72 text-center rounded-b-4xl cursor-pointer
                   transition-all duration-300
                   hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
                 "
@@ -49,11 +49,11 @@ export default function Home() {
                   onMouseEnter={() => setHoverEffect(true)}
                   onMouseLeave={() => setHoverEffect(false)}
                   className="
-                  border-2 border-brand-primary font-bold text-xl text-brand-primary
-                  px-6 py-4 w-48 text-center rounded-b-4xl cursor-pointer
-                  transition-all duration-300
-                  hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
-                "
+                    border-2 border-brand-primary font-bold text-3xl text-brand-primary
+                    px-12 py-6 w-64 text-center rounded-b-4xl cursor-pointer
+                    transition-all duration-300
+                    hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
+                  "
                 >
                   CRÉDITOS
                 </div>
@@ -71,8 +71,8 @@ export default function Home() {
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
                 className="
-                  border-2 border-brand-primary font-bold text-lg text-brand-primary
-                  px-5 py-3 w-40 text-center rounded-b-4xl cursor-pointer
+                  border-2 border-brand-primary font-bold text-2xl text-brand-primary
+                  px-8 py-5 w-52 text-center rounded-b-4xl cursor-pointer
                   transition-all duration-300
                   hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
                 "

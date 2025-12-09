@@ -1,84 +1,100 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+
+interface CardOptionProps {
+  text: string;
+  onClick: () => void;
+  disabled?: boolean;
+  index: number;
+  initialRotate?: number;
+  isFocused: boolean;
+  setFocusedCard: (index: number | null) => void;
+  initialAnimation?: {
+    y: number;
+    rotate: number;
+    opacity: number;
+    animateY: number;
+    animateRotate: number;
+    animateOpacity: number;
+    delay: number;
+  };
+  style?: React.CSSProperties;
+}
 
 export default function CardOption({
   text,
   onClick,
   disabled = false,
-  index = 0,
+  index,
   initialRotate = 0,
-}: {
-  text: string;
-  onClick: () => void;
-  disabled?: boolean;
-  index?: number;
-  initialRotate?: number;
-}) {
-  const [flipped, setFlipped] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setFlipped(true), 500 + index * 150);
-    return () => clearTimeout(timer);
-  }, [index]);
-
+  isFocused,
+  setFocusedCard,
+  initialAnimation,
+  style = {},
+}: CardOptionProps) {
   return (
     <motion.div
-      initial={{ y: -50, opacity: 0, rotate: initialRotate }}
-      animate={{ y: 0, opacity: 1, rotate: 0 }}
-      whileHover={{ scale: disabled ? 1 : 1.05, y: disabled ? 0 : -5, rotate: disabled ? 0 : 2 }}
-      transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      className="w-44 h-60 perspective"
-      style={{ zIndex: 100 - index }}
+      onMouseEnter={() => setFocusedCard(index)}
+      onMouseLeave={() => setFocusedCard(null)}
+      initial={{
+        y: initialAnimation?.y ?? 0,
+        rotate: initialAnimation?.rotate ?? initialRotate,
+        opacity: initialAnimation?.opacity ?? 0,
+      }}
+      animate={{
+        y: isFocused
+          ? -30
+          : initialAnimation?.animateY ?? 0,
+        rotate: isFocused
+          ? 0
+          : initialAnimation?.animateRotate ?? initialRotate,
+        opacity: initialAnimation?.animateOpacity ?? 1,
+        scale: isFocused ? 1.15 : 1,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        delay: initialAnimation?.delay ?? 0,
+      }}
+      className="w-44 h-60 perspective cursor-pointer"
+      style={style}
     >
       <motion.div
-        onClick={() => { if (!disabled) onClick(); }}
-        className="relative w-full h-full cursor-pointer"
+        onClick={() => { if (!disabled && isFocused) onClick(); }}
+        className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d", perspective: 1200 }}
       >
         {/* Frente da carta */}
         <motion.div
-          className="absolute  w-full h-full rounded-2xl border flex items-center justify-center text-center font-bold text-[#2E1B00] shadow-2xl"
+          className="absolute w-full h-full rounded-xl flex items-center justify-center text-center font-bold text-[#2E1B00] shadow-lg"
           style={{
             backfaceVisibility: "hidden",
-            rotateY: flipped ? 0 : 180,
             backgroundImage: "url('/textures/frente_card.jpg')",
-            borderColor: "#a88d72",
-            opacity: disabled ? 0.4 : 1
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            opacity: disabled ? 0.4 : 1,
+            border: "2px solid rgba(0,0,0,0.2)"
           }}
-          animate={{ rotateY: flipped ? 0 : 180 }}
-          transition={{ duration: 0.6 }}
-          whileHover={{
-            boxShadow: disabled
-              ? "0px 5px 10px rgba(0,0,0,0.3)"
-              : "5px 7px 15px rgba(0,0,0,0.5)",
-            transition: { type: "tween", duration: 0.3 }
-          }}
+          animate={{ rotateY: isFocused ? 0 : 180 }}
+          transition={{ duration: 0.5 }}
         >
-          <span className="px-4 text-lg">{text}</span>
+          <span className="px-2 text-lg">{text}</span>
         </motion.div>
 
         {/* Verso da carta */}
         <motion.div
-          className="absolute w-full h-full rounded-2xl shadow-2xl border-4 flex items-center justify-center"
+          className="absolute w-full h-full rounded-xl shadow-md flex items-center justify-center"
           style={{
             backfaceVisibility: "hidden",
-            rotateY: flipped ? 180 : 0,
             backgroundImage: "url('/textures/metal_back.jpg')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            borderColor: "#a68c5f",
+            border: "1px solid rgba(0,0,0,0.2)",
           }}
-          animate={{ rotateY: flipped ? 180 : 0 }}
-          transition={{ duration: 0.6 }}
-          whileHover={{
-            boxShadow: disabled
-              ? "0px 5px 10px rgba(0,0,0,0.3)"
-              : "5px 7px 15px rgba(0,0,0,0.5)",
-            transition: { type: "tween", duration: 0.3 }
-          }}
+          animate={{ rotateY: isFocused ? 180 : 0 }}
+          transition={{ duration: 0.5 }}
         />
       </motion.div>
     </motion.div>
