@@ -8,13 +8,14 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/button";
 
 export default function Page() {
   const { id } = useParams();
   const phase = Number(id) || 1;
   const router = useRouter(); 
 
-  const TOTAL_PHASES = 3; 
+  const TOTAL_PHASES = 4; 
   const phaseQuestions: Question[] = questions.filter((q) => q.phase === phase);
 
   const [current, setCurrent] = useState(0);
@@ -23,6 +24,9 @@ export default function Page() {
   const [disableAll, setDisableAll] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [isWrong, setIsWrong] =useState(false);
+  const [isPhaseFinished, setIsPhaseFinished] = useState(false);
+  const nextPhase = phase + 1;
+
   const [feedback, setFeedback] = useState("");
   const question = phaseQuestions[current];
 
@@ -42,10 +46,11 @@ export default function Page() {
         setRemovedOptions([]);
         setDisableAll(false);
       } else {
-        const nextPhase = phase + 1;
+        //const nextPhase = phase + 1;
         if (nextPhase <= TOTAL_PHASES) {
-          window.alert(`🎉 Você concluiu a Fase ${phase}! Preparando para a Fase ${nextPhase}...`);
-          router.push(`/levels/${nextPhase}`); 
+          setIsPhaseFinished(true);
+         //window.alert(`🎉 Você concluiu a Fase {phase}! Preparando para a Fase {nextPhase}...`);
+          //router.push(`/levels/${nextPhase}`); 
         } else {
 
             // Todas as fases concluídas
@@ -138,7 +143,7 @@ export default function Page() {
 
       {/* Área principal */}
       <main className="flex-4 flex flex-col justify-between items-center py-6 w-full">
-        <Dialog open={isCorrect } onOpenChange={setIsCorrect}>
+        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
           <DialogContent
             className="z-110 h-48 text-center"
             style={{
@@ -153,7 +158,7 @@ export default function Page() {
             <p>{feedback}</p>
           </DialogContent>
         </Dialog>
-        <Dialog open={isWrong } onOpenChange={setIsWrong}>
+        <Dialog open={isWrong} onOpenChange={setIsWrong}>
           <DialogContent
             className="z-110 h-48 text-center"
             style={{
@@ -166,6 +171,25 @@ export default function Page() {
             <DialogTitle>RESPOSTA INCORRETA!</DialogTitle>
 
             <p>{feedback}</p>
+          </DialogContent>
+        </Dialog>
+        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
+          <DialogContent
+            className="z-110 h-48 text-center"
+            style={{
+              backgroundImage: "url('/textures/papel_antigo_carta.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+          >
+            <DialogTitle>FIM DE FASE!</DialogTitle>
+
+            <p>
+              Você concluiu a Fase {phase}! Preparando para a Fase {nextPhase}
+              ...
+            </p>
+            <Button onClick={() => router.push(`/levels/${nextPhase}`)}className="bg-brand-primary hover:bg-brand-primary-dark hover:cursor-pointer transition-colors duration-300">Próxima Fase</Button>
           </DialogContent>
         </Dialog>
 
