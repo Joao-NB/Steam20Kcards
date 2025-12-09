@@ -43,7 +43,7 @@ export default function CardOption({
           style={{
             backfaceVisibility: "hidden",
             rotateY: flipped ? 0 : 180,
-            backgroundColor: "#dfd1b7",
+            backgroundImage: "url('/textures/frente_card.jpg')",
             borderColor: "#a88d72",
             opacity: disabled ? 0.4 : 1
           }}
