@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { questions, Question, Option } from "@/app/data/questions";
 import CardOption from "@/app/components/CardOption";
-import { motion } from "framer-motion";
+import { motion, Transition } from "framer-motion";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -22,7 +22,6 @@ export default function Page() {
 
   const TOTAL_PHASES = 4;
 
-  // Memoriza perguntas para não recriar a cada render
   const phaseQuestions: Question[] = useMemo(
     () => questions.filter((q) => q.phase === phase),
     [phase]
@@ -42,9 +41,8 @@ export default function Page() {
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
   const wrongAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Áudios apenas no client
   useEffect(() => {
-    correctAudioRef.current = new Audio("/sounds/card_correct.wav");
+    correctAudioRef.current = new Audio("/sounds/card_correct.mp3");
     correctAudioRef.current.volume = 0.4;
 
     wrongAudioRef.current = new Audio("/sounds/card_rip.wav");
@@ -118,7 +116,7 @@ export default function Page() {
 
   const dropAnimation = { y: 0, opacity: 1 };
   const initialDrop = { y: -200, opacity: 0 };
-  const dropTransition = { type: "spring", stiffness: 120, damping: 12 };
+  const dropTransition: Transition = { type: "spring", stiffness: 120, damping: 12 };
 
   return (
     <div
