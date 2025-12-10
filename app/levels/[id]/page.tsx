@@ -154,6 +154,7 @@ export default function Page() {
           />
         ))}
       </aside>
+    
 
       {/* PERGUNTA + OPÇÕES */}
       <main className="flex-4 flex flex-col justify-between items-center py-6 w-full relative">
@@ -175,7 +176,7 @@ export default function Page() {
 
         <Dialog open={isWrong} onOpenChange={setIsWrong}>
           <DialogContent
-            className="z-110 h-48 text-center"
+            className="z-111h-48 text-center"
             style={{
               backgroundImage: "url('/textures/mesa_western.jpg')",
               backgroundSize: "cover",
