@@ -93,17 +93,6 @@ export default function Page() {
     setRandomProps(props || []);
   }, [current, phaseQuestions]);
 
-  useEffect(() => {
-  window.history.replaceState(null, "", "/");
-
-  const preventBack = () => {
-    router.replace("/");
-  };
-
-  window.addEventListener("popstate", preventBack);
-  return () => window.removeEventListener("popstate", preventBack);
-}, [router]);
-
   function triggerGearSpin() {
     gearsAnimation.start({
       rotate: [0, 360],
