@@ -94,17 +94,15 @@ export default function Page() {
   }, [current, phaseQuestions]);
 
   useEffect(() => {
-    const handlePopState = () => {
-      // usa replace pra não empilhar história ao redirecionar
-      router.replace("/levels");
-    };
+  window.history.replaceState(null, "", "/");
 
-    window.addEventListener("popstate", handlePopState);
+  const preventBack = () => {
+    router.replace("/");
+  };
 
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [router]);
+  window.addEventListener("popstate", preventBack);
+  return () => window.removeEventListener("popstate", preventBack);
+}, [router]);
 
   function triggerGearSpin() {
     gearsAnimation.start({
