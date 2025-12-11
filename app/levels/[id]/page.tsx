@@ -177,13 +177,13 @@ export default function Page() {
         <Image src="/images/corrente_direita.png" alt="Corrente direita" width={80} height={220} />
       </motion.div>
 
-      {/* Correntes - DESKTOP (posição antiga) */}
+      {/* Correntes - DESKTOP */}
       <motion.div initial={initialDrop} animate={dropAnimation} className="hidden lg:block absolute -top-5 left-[30%] z-40">
-  <Image src="/images/corrente_esquerda.png" alt="Corrente" width={90} height={300} />
-</motion.div>
-<motion.div initial={initialDrop} animate={dropAnimation} className="hidden lg:block absolute -top-5 right-[20%] z-40">
-  <Image src="/images/corrente_direita.png" alt="Corrente" width={120} height={300} />
-</motion.div>
+        <Image src="/images/corrente_esquerda.png" alt="Corrente" width={90} height={300} />
+      </motion.div>
+      <motion.div initial={initialDrop} animate={dropAnimation} className="hidden lg:block absolute -top-5 right-[20%] z-40">
+        <Image src="/images/corrente_direita.png" alt="Corrente" width={120} height={300} />
+      </motion.div>
 
       {/* FASE STEAMPUNK - Desktop */}
       <div className="hidden lg:block fixed top-8 left-8 z-50">
@@ -304,25 +304,24 @@ export default function Page() {
           })}
         </div>
 
-        {/* FASE-X-Y e engrenagens MOBILE - parte inferior */}
-        <div className="flex flex-col items-center gap-4 mt-8 lg:hidden absolute bottom-6">
+        {/* FASE-X-Y e engrenagens MOBILE - lado a lado */}
+        <div
+          className={`flex items-center gap-4 mt-8 lg:hidden absolute bottom-6`}
+        >
           <h1
             className="text-black font-extrabold drop-shadow-2xl tracking-wider"
             style={{ fontSize: isMobile ? '1.5rem' : '1.875rem' }}
           >
             Fase {phase}-{current + 1}
           </h1>
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             {Array.from({ length: 3 }).map((_, i) => (
-              <motion.div
-                key={i}
-                animate={gearsAnimation}
-              >
+              <motion.div key={i} animate={gearsAnimation}>
                 <Image
                   src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
                   alt="vida"
-                  width={60}
-                  height={60}
+                  width={40}
+                  height={40}
                 />
               </motion.div>
             ))}
