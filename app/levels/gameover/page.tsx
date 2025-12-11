@@ -1,114 +1,131 @@
 "use client";
-import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import Image from "next/image";
+
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from "next/link";
+import { useState } from "react";
 
-export default function TutorialPage() {
-  const [currentModal, setCurrentModal] = useState(0);
-
-  const tutorialTitles = [
-    "BEM VINDO",
-    "APRENDIZADO INTERATIVO",
-    "FUNCIONAMENTO",
-    "MAPAS",
-    "OPÇÕES DE RESPOSTAS",
-    "PERDAS E VIDAS"
-  ];
-
-  const tutorialMessages = [
-    "BEM VINDO AO STEAM 20K CARDS",
-    "AQUI APRENDEREMOS SOBRE A ISO 20000 DE FORMA INTERATIVA",
-    "FUNCIONARA DA SEGUINTE FORMA:",
-    "HA 4 MAPAS, CADA UM CONTENDO 5 PERGUNTAS DO AMBIENTE DE TRABALHO",
-    "PARA CADA PERGUNTA VOCE TERA 5 OPCOES DE RESPOSTAS, CARDS, QUE ESTARAO NO SEU DECK",
-    "CADA PERGUNTA TERA UMA RESPOSTA CORRETA. CASO ESCOLHA O CARD ERRADO, PERDERA UMA VIDA. AO PERDER TODAS, REINICIA A FASE INTEIRA"
-  ];
-
-  const nextModal = () => {
-    if (currentModal < tutorialMessages.length - 1) {
-      setCurrentModal((prev) => prev + 1);
-    } else {
-      window.location.href = "/levels/1"; // redireciona para o jogo
-    }
-  };
+export default function Home() {
+  const [hoverEffect, setHoverEffect] = useState(false);
 
   return (
     <div
-      className="relative flex items-center justify-center min-h-screen w-full bg-cover bg-center"
+      className="flex flex-col gap-4 min-h-screen w-dvw items-center justify-center p-4 bg-cover"
       style={{ backgroundImage: "url('/texture.jpg')" }}
     >
-      {/* Botão voltar para home */}
-      <Link href="/" className="absolute top-4 right-4 z-[200] w-12 h-12 md:w-16 md:h-16">
-        <Image
-          src="/Vector.svg"
-          alt="Voltar para Home"
-          width={64}
-          height={64}
-          className="object-contain cursor-pointer"
-        />
-      </Link>
+      <h1 className="text-6xl font-bold">FIM DE JOGO!</h1>
+      <div className="w-full max-w-7xl h-auto flex flex-col md:flex-row p-4 gap-6">
+        {/* IMAGEM LATERAL MAIOR */}
+        <div
+          className={`
+            w-full md:w-1/2 bg-center bg-no-repeat bg-contain
+            transition-transform duration-500
+            ${hoverEffect ? "scale-110" : "scale-100"}
+          `}
+          style={{ backgroundImage: "url('/Vector.svg')" }}
+        ></div>
 
-      {/* Modal do tutorial */}
-      <Dialog open={true} onOpenChange={() => {}} modal={false}>
-        <DialogContent
-          onClick={nextModal}
-          className="cursor-pointer flex flex-col justify-center items-center text-center"
-          style={{
-            backgroundImage: "url('/images/fundo_modal.png')",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            width: "85%",
-            maxWidth: "900px",
-            minHeight: "500px",
-            borderRadius: "20px",
-            padding: "40px",
-            zIndex: 100,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <DialogTitle
-            style={{
-              color: "#4e4540",
-              fontSize: "3rem",
-              lineHeight: 1.2,
-              fontWeight: "normal",
-              textTransform: "uppercase",
-              textAlign: "center",
-              marginBottom: "20px"
-            }}
-          >
-            {tutorialTitles[currentModal]}
-          </DialogTitle>
-          <p
-            style={{
-              color: "#4e4540",
-              fontSize: "2rem",
-              lineHeight: 1.5,
-              fontWeight: "normal",
-              textTransform: "uppercase",
-              textAlign: "center",
-            }}
-          >
-            {tutorialMessages[currentModal]}
-          </p>
-          <span
-            style={{
-              marginTop: "30px",
-              color: "#4e4540",
-              fontSize: "1.6rem",
-              textAlign: "center",
-            }}
-          >
-            Clique em qualquer lugar para continuar
-          </span>
-        </DialogContent>
-      </Dialog>
+        {/* BOTÕES */}
+        <div className="w-full md:w-1/2 flex justify-center items-center font-game">
+          <div className="flex flex-col items-center space-y-6">
+            {/* BOTÃO GRANDE - JOGAR */}
+            <Link href="/levels/1">
+              <div
+                onMouseEnter={() => setHoverEffect(true)}
+                onMouseLeave={() => setHoverEffect(false)}
+                className="
+                  border-4 border-brand-primary font-bold text-2xl text-brand-primary
+                  px-8 py-5 w-56 text-center rounded-b-4xl cursor-pointer
+                  transition-all duration-300
+                  hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
+                "
+              >
+                REINICIAR
+              </div>
+            </Link>
+
+            {/* BOTÃO MÉDIO - CRÉDITOS */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <div
+                  onMouseEnter={() => setHoverEffect(true)}
+                  onMouseLeave={() => setHoverEffect(false)}
+                  className="
+                  border-4 border-brand-primary font-bold text-xl text-brand-primary
+                  px-6 py-4 w-48 text-center rounded-b-4xl cursor-pointer
+                  transition-all duration-300
+                  hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
+                "
+                >
+                  CRÉDITOS
+                </div>
+              </SheetTrigger>
+              <SheetContent className="border-2 border-r-0 rounded-l-xl border-brand-primary bg-brand-gray text-brand-light">
+                <SheetHeader>
+                  <SheetTitle className="text-brand-light text-2xl">CRÉDITOS</SheetTitle>
+                </SheetHeader>
+                <div className="p-4 space-y-4">
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      Arthur do Nascimento Penaforte:
+                    </span>
+                    Desenvolvedor Front-End.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      Hugo Henrique Andrade Lima:
+                    </span>
+                    Diretor de Arte e Designer.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      Ivisson Pereira Do Nascimento Alves:
+                    </span>
+                    Arquiteto de software.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      João Guilherme Nemesio Beltrão:
+                    </span>
+                    Desenvolvedor Front-End.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      Pedro Augusto Veiga Pessoa De Araújo:
+                    </span>
+                    QA.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">
+                      Pedro Guedes Lunguinho Silva:
+                    </span>
+                    Game Design.
+                  </h1>
+                  <h1 className="text-xl">
+                    <span className="font-bold">Túlio Lemos Cabral: </span>
+                    Gestor de projeto e QA.
+                  </h1>
+                </div>
+              </SheetContent>
+            </Sheet>
+
+            {/* BOTÃO PEQUENO - SAIR */}
+            <Link href="https://youtu.be/dQw4w9WgXcQ?si=Qk66UPnGTi8DqDSb">
+              <div
+                onMouseEnter={() => setHoverEffect(true)}
+                onMouseLeave={() => setHoverEffect(false)}
+                className="
+                  border-4 border-brand-primary font-bold text-lg text-brand-primary
+                  px-5 py-3 w-40 text-center rounded-b-4xl cursor-pointer
+                  transition-all duration-300
+                  hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
+                "
+              >
+                SAIR
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
