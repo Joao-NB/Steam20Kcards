@@ -4,7 +4,7 @@ import { Dialog } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, easeOut, easeIn } from "framer-motion";
 
 export default function TutorialPage() {
   const [currentModal, setCurrentModal] = useState(0);
@@ -35,21 +35,20 @@ export default function TutorialPage() {
     "CADA PERGUNTA TERA UMA RESPOSTA CORRETA. CASO ESCOLHA O CARD ERRADO, PERDERA UMA VIDA. AO PERDER TODAS, REINICIA A FASE INTEIRA"
   ];
 
-  // Função para tocar som
   const playSound = () => {
     const audio = new Audio("/sounds/card_drop.mp3");
     audio.play();
   };
 
-  // Tocar som **uma vez** quando o primeiro modal surge ao entrar na página
+  // Tocar som no primeiro modal ao entrar
   useEffect(() => {
     playSound();
-  }, []); // [] garante que toque só uma vez
+  }, []);
 
   const nextModal = () => {
     if (currentModal < tutorialMessages.length - 1) {
       setCurrentModal(prev => prev + 1);
-      playSound(); // toca som toda vez que avança para o próximo modal
+      playSound(); // toca som ao avançar modal
     } else {
       window.location.href = "/levels/1";
     }
@@ -57,8 +56,14 @@ export default function TutorialPage() {
 
   const modalVariants = {
     hidden: { x: 300, y: -30, rotate: -15, scale: 0.9, opacity: 0 },
-    visible: { x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
-    exit: { x: -300, y: 30, rotate: 15, scale: 0.9, opacity: 0, transition: { duration: 0.6, ease: "easeIn" } },
+    visible: { 
+      x: 0, y: 0, rotate: 0, scale: 1, opacity: 1, 
+      transition: { duration: 0.6, ease: easeOut } 
+    },
+    exit: { 
+      x: -300, y: 30, rotate: 15, scale: 0.9, opacity: 0, 
+      transition: { duration: 0.6, ease: easeIn } 
+    },
   };
 
   return (
@@ -79,7 +84,7 @@ export default function TutorialPage() {
             animate="visible"
             exit="exit"
             onClick={nextModal}
-            className={`cursor-pointer flex flex-col items-center text-center w-[90%] sm:w-[65%] max-w-[1000px]`}
+            className="cursor-pointer flex flex-col items-center text-center w-[90%] sm:w-[65%] max-w-[1000px]"
             style={{
               backgroundImage: "url('/images/fundo_modal.png')",
               backgroundSize: "cover",
@@ -128,13 +133,10 @@ export default function TutorialPage() {
 
             <div className="flex flex-col justify-center items-center w-full">
               <p
-                className={`text-[1.4rem] sm:text-[1.8rem] leading-relaxed text-center uppercase text-[#4e4540] 
-                           max-w-[90%] sm:max-w-[550px] mx-auto break-words ${
-                             currentModal === 5 && isMobile ? "text-[1.1rem] sm:text-[1.6rem]" : ""
-                           }`}
-                style={{
-                  lineHeight: isMobile && currentModal !== 5 ? 1.8 : 1.6,
-                }}
+                className={`text-[1.4rem] sm:text-[1.8rem] leading-relaxed text-center uppercase text-[#4e4540] max-w-[90%] sm:max-w-[550px] mx-auto break-words ${
+                  currentModal === 5 && isMobile ? "text-[1.1rem] sm:text-[1.6rem]" : ""
+                }`}
+                style={{ lineHeight: isMobile && currentModal !== 5 ? 1.8 : 1.6 }}
               >
                 {tutorialMessages[currentModal]}
               </p>
