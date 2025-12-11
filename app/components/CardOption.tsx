@@ -24,7 +24,7 @@ interface CardOptionProps {
   style?: React.CSSProperties;
   isMobile?: boolean;
   textStyle?: React.CSSProperties;
-  onHoverEffect?: (index: number) => void; // Para animar vizinhas
+  onHoverEffect?: (index: number) => void;
 }
 
 export default function CardOption({
@@ -60,9 +60,11 @@ export default function CardOption({
     dropAudio.current.volume = volume;
     dropAudio.current.playbackRate = pitch;
 
-    const timer = setTimeout(() => dropAudio.current?.play(), (initialAnimation?.delay ?? 0) * 1000);
+    const timer = setTimeout(
+      () => dropAudio.current?.play(),
+      (initialAnimation?.delay ?? 0) * 1000
+    );
 
-    // animação aleatória contínua mais perceptível
     const interval = setInterval(() => {
       randomAnim.start({
         x: (Math.random() - 0.5) * 6,
@@ -101,7 +103,7 @@ export default function CardOption({
         scale: isFocused ? 1.15 : 1,
       }}
       transition={{
-        type: "spring" as const,
+        type: "spring",
         stiffness: 220,
         damping: 15,
         delay: initialAnimation?.delay ?? 0,
@@ -124,15 +126,15 @@ export default function CardOption({
         }}
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-        animate={randomAnim} // animação contínua aleatória
+        animate={randomAnim}
       >
-        {/* Frente da carta */}
+        {/* FRENTE DA CARTA (NÃO ALTEREI NADA) */}
         <motion.div
           className="absolute w-full h-full rounded-xl flex items-center justify-center text-center font-bold text-[#2E1B00] shadow-lg"
           style={{
             backfaceVisibility: "hidden",
             backgroundImage: "url('/textures/minha_frente.jpg')",
-            backgroundSize: "cover",
+            backgroundSize: "100% 100%",
             backgroundPosition: "center",
             opacity: disabled ? 0.4 : 1,
             border: "2px solid rgba(0,0,0,0.2)",
@@ -151,14 +153,19 @@ export default function CardOption({
           </span>
         </motion.div>
 
-        {/* Verso da carta */}
+        {/* VERSO (ATUALIZADO) */}
         <motion.div
           className="absolute w-full h-full rounded-xl shadow-md flex items-center justify-center"
           style={{
             backfaceVisibility: "hidden",
+
             backgroundImage: "url('/textures/metal_back.jpg')",
-            backgroundSize: "cover",
+            
+            // 🔥 Agora ocupa 100% da carta e elimina as sobras
+            backgroundSize: "135%", // Zoom central ajustável
             backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+
             border: "1px solid rgba(0,0,0,0.2)",
           }}
           animate={{ rotateY: isFocused ? 180 : 0 }}

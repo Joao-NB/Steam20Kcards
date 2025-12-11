@@ -92,6 +92,27 @@ export default function Page() {
     }));
     setRandomProps(props || []);
   }, [current, phaseQuestions]);
+  useEffect(() => {
+    const handlePopState = () => {
+      router.push("/"); // volta para a home
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [router]);
+  
+  // ⬆️ FIM DO TRECHO
+
+  function triggerGearSpin() {
+    gearsAnimation.start({
+      rotate: [0, 360],
+      transition: { duration: 0.8, ease: "easeInOut" },
+    });
+  }
+
 
   function triggerGearSpin() {
     gearsAnimation.start({
@@ -194,60 +215,97 @@ export default function Page() {
       </motion.div>
 
       {/* FASE STEAMPUNK - Desktop */}
-      <div className="hidden lg:block fixed top-8 left-8 z-50">
-        <div className="relative">
-          <div className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3">
-            <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+<div className="hidden lg:block fixed top-8 left-8 z-50">
+  <div className="relative">
+    <motion.div
+      initial={{ opacity: 0, y: 25, scaleY: 1 }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scaleY: [1, 1.04, 1],
+      }}
+      transition={{
+        opacity: { duration: 0.5, ease: "easeOut" },
+        y: { duration: 0.5, ease: "easeOut" },
+        scaleY: {
+          duration: 1.5,
+          repeat: Infinity,
+          repeatType: "reverse",
+          ease: "easeInOut"
+        },
+      }}
+      className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3"
+    >
+      <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+      <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+      <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+      <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
 
-            <h1
-              className="text-3xl font-bold tracking-wider drop-shadow-lg"
-              style={{
-                color: "#d8603b",
-                textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
-              }}
-            >
-              FASE {phase}-{current + 1}
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* PAINEL LATERAL - Desktop */}
-      <aside
-        className="hidden lg:flex flex-col items-center justify-center relative"
+      <h1
+        className="text-3xl font-bold tracking-wider drop-shadow-lg"
         style={{
-          width: "240px",
-          height: "100vh",
-          marginLeft: "-100px",
+          color: "#d8603b",
+          textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
         }}
       >
-        <motion.div
-          animate={gearsPanelAnimation}
-          className="relative flex flex-col items-center justify-center w-full h-full"
-        >
-          <div className="absolute w-full h-full top-0 left-0">
-            <Image src="/images/fundo_engrena.png" alt="Painel" fill style={{ objectFit: "contain" }} />
-          </div>
+        FASE {phase}-{current + 1}
+      </h1>
+    </motion.div>
+  </div>
+</div>
 
-          <div className="relative flex flex-col items-center justify-center w-full z-10" style={{ top: "-12px", gap: "22px" }}>
-            <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
-              {Array.from({ length: 3 }).map((_, v) => (
-                <motion.div key={v} animate={gearsAnimation} style={{ width: 84, height: 84 }}>
-                  <Image
-                    src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
-                    alt="vida"
-                    width={84}
-                    height={84}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      </aside>
+
+
+     {/* PAINEL LATERAL - Desktop */}
+<aside
+  className="hidden lg:flex flex-col items-center justify-center relative"
+  style={{
+    width: "240px",
+    height: "100vh",
+    marginLeft: "-100px",
+  }}
+>
+  <motion.div
+    initial={{ opacity: 0, y: -20 }}            // animação de entrada
+    animate={{ opacity: 1, y: 0 }}              // estado final fixo
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    className="relative flex flex-col items-center justify-center w-full h-full"
+  >
+    {/* Fundo */}
+    <div className="absolute w-full h-full top-0 left-0">
+      <Image
+        src="/images/fundo_engrena.png"
+        alt="Painel"
+        fill
+        style={{ objectFit: "contain" }}
+      />
+    </div>
+
+    {/* Engrenagens / Vidas */}
+    <div
+      className="relative flex flex-col items-center justify-center w-full z-10"
+      style={{ top: "-12px", gap: "22px" }}
+    >
+      <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
+        {Array.from({ length: 3 }).map((_, v) => (
+          <motion.div
+            key={v}
+            animate={gearsAnimation}              // mantém a animação da engrenagem
+            style={{ width: 84, height: 84 }}
+          >
+            <Image
+              src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
+              alt="vida"
+              width={84}
+              height={84}
+            />
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  </motion.div>
+</aside>
+
 
       {/* CONTEÚDO CENTRAL */}
       <main className="flex-1 flex flex-col justify-start items-center py-6 w-full relative">
