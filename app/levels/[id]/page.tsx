@@ -96,7 +96,7 @@ export default function Page() {
   useEffect(() => {
     const handlePopState = () => {
       // usa replace pra não empilhar história ao redirecionar
-      router.replace("/");
+      router.replace("/levels");
     };
 
     window.addEventListener("popstate", handlePopState);
