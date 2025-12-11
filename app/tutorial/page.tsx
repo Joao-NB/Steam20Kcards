@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import { DialogTitle } from "@radix-ui/react-dialog";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, easeOut, easeIn } from "framer-motion";
@@ -16,15 +15,6 @@ export default function TutorialPage() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const tutorialTitles = [
-    "BEM VINDO",
-    "APRENDIZADO INTERATIVO",
-    "FUNCIONAMENTO",
-    "MAPAS",
-    "OPÇÕES DE RESPOSTAS",
-    "PERDAS E VIDAS"
-  ];
 
   const tutorialMessages = [
     "BEM VINDO AO STEAM 20K CARDS",
@@ -93,50 +83,21 @@ export default function TutorialPage() {
               borderRadius: 0,
               display: "flex",
               flexDirection: "column",
-              justifyContent: currentModal === 5 ? "flex-start" : "center",
+              justifyContent: "center", // sempre centraliza verticalmente
               alignItems: "center",
               zIndex: 100,
-              padding:
-                currentModal === 5
-                  ? isMobile
-                    ? "50px 10px 20px 10px"
-                    : "100px 30px 30px 30px"
-                  : isMobile
-                  ? "20px 15px 20px 15px"
-                  : "40px",
-              minHeight:
-                currentModal === 5
-                  ? isMobile
-                    ? "auto"
-                    : "500px"
-                  : isMobile
-                  ? "60vh"
-                  : "450px",
-              maxHeight:
-                currentModal === 5
-                  ? isMobile
-                    ? "75vh"
-                    : "600px"
-                  : isMobile
-                  ? "80vh"
-                  : "600px",
+              padding: isMobile ? "25px 15px" : "40px", // padding equilibrado
+              minHeight: isMobile ? "55vh" : currentModal === 5 ? "500px" : "450px", // modais mais altos no mobile
+              maxHeight: isMobile ? "70vh" : currentModal === 5 ? "600px" : "600px",
               overflowY: isMobile ? "auto" : "visible",
             }}
           >
-            <DialogTitle
-              className={`text-[2rem] sm:text-[2.8rem] leading-snug text-center uppercase text-[#4e4540] mb-6 ${
-                currentModal === 5 && isMobile ? "text-[1.6rem]" : ""
-              }`}
-            >
-              {tutorialTitles[currentModal]}
-            </DialogTitle>
-
-            <div className="flex flex-col justify-center items-center w-full">
+            <div className="flex flex-col justify-center items-center w-full h-full">
               <p
                 className={`text-[1.4rem] sm:text-[1.8rem] leading-relaxed text-center uppercase text-[#4e4540] max-w-[90%] sm:max-w-[550px] mx-auto break-words ${
                   currentModal === 5 && isMobile ? "text-[1.1rem] sm:text-[1.6rem]" : ""
                 }`}
-                style={{ lineHeight: isMobile && currentModal !== 5 ? 1.8 : 1.6 }}
+                style={{ lineHeight: isMobile ? 1.8 : 1.6 }}
               >
                 {tutorialMessages[currentModal]}
               </p>
