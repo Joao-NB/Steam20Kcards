@@ -110,18 +110,19 @@ export default function Page() {
       correctAudioRef.current?.play();
 
       if (current + 1 < phaseQuestions.length) {
-        setTimeout(() => {
-          setCurrent((c) => c + 1);
-          setRemovedOptions([]);
-          setDisableAll(false);
-        }, 500);
-      } else {
-        if (nextPhase <= TOTAL_PHASES) {
-          setIsPhaseFinished(true);
-        } else {
-          router.push("/levels/finish");
-        }
-      }
+  setTimeout(() => {
+    setCurrent((c) => c + 1);
+    setRemovedOptions([]);
+    setDisableAll(false);
+  }, 500);
+} else {
+  if (nextPhase <= TOTAL_PHASES) {
+    setIsPhaseFinished(true); // Aqui chamamos o modal
+  } else {
+    router.push("/levels/finish");
+  }
+}
+
     } else {
       triggerGearSpin();
       setLives((prev) => {
@@ -375,8 +376,10 @@ export default function Page() {
             onClick={() => setIsWrong(false)}
             className="z-110 flex flex-col justify-center items-center cursor-pointer"
             style={{
+              position: "fixed",
               backgroundImage: "url('/images/fundo_modal.png')",
               backgroundSize: "cover",
+              zIndex: 9999,  
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",
               width: "90%",
@@ -414,6 +417,54 @@ export default function Page() {
             </div>
           </DialogContent>
         </Dialog>
+
+                {/* Dialog Fase Concluída */}
+<Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
+  <DialogContent
+    onClick={() => {
+      setIsPhaseFinished(false);
+      router.push(`/levels/${nextPhase}`); // Vai para o próximo nível
+    }}
+    className="z-110 flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%",
+      maxWidth: "600px",
+      height: "350px",
+      borderRadius: "12px",
+      padding: "20px 30px",
+    }}
+  >
+    <div className="flex flex-col justify-center items-center h-full gap-5">
+      <DialogTitle
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "2rem",
+          fontWeight: "bold",
+        }}
+      >
+        PARABÉNS!
+      </DialogTitle>
+      <p
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "1.6rem",
+          fontWeight: "normal",
+          maxWidth: "250px",
+        }}
+      >
+        Você passou para o Nível {nextPhase}!
+      </p>
+    </div>
+  </DialogContent>
+</Dialog>
+
+        
       </main>
     </div>
   );
