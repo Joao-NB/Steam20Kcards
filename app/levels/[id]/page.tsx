@@ -1,10 +1,10 @@
+// 🔥 PAGE.TSX - fase-x-y desktop e mobile corrigidos + FASE X-Y Desktop estilo steampunk
 "use client";
-
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { questions, Question, Option } from "@/app/data/questions";
 import CardOption from "@/app/components/CardOption";
-import { motion, Transition } from "framer-motion";
+import { motion, Transition, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
@@ -19,7 +19,6 @@ export default function Page() {
   const { id } = useParams();
   const phase = Number(id) || 1;
   const router = useRouter();
-
   const TOTAL_PHASES = 4;
 
   const phaseQuestions: Question[] = useMemo(
@@ -37,22 +36,47 @@ export default function Page() {
   const [feedback, setFeedback] = useState("");
   const [focusedCard, setFocusedCard] = useState<number | null>(null);
   const [randomProps, setRandomProps] = useState<RandomProps[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const correctAudioRef = useRef<HTMLAudioElement | null>(null);
   const wrongAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  const gearsAnimation = useAnimation();
+  const gearsPanelAnimation = useAnimation();
+
   useEffect(() => {
     correctAudioRef.current = new Audio("/sounds/card_correct.mp3");
     correctAudioRef.current.volume = 0.4;
-
     wrongAudioRef.current = new Audio("/sounds/card_rip.wav");
     wrongAudioRef.current.volume = 0.4;
-  }, []);
+
+    const animateGears = async () => {
+      await gearsPanelAnimation.start({
+        x: 0,
+        transition: { duration: 0.3, ease: "easeOut" },
+      });
+      gearsAnimation.start({
+        x: 0,
+        rotate: [0, 360],
+        transition: { duration: 0.3, ease: "easeOut" },
+      });
+    };
+
+    gearsPanelAnimation.set({ x: -240 });
+    gearsAnimation.set({ x: -240, rotate: 0 });
+    animateGears();
+  }, [gearsAnimation, gearsPanelAnimation]);
 
   const question = phaseQuestions[current];
   const nextPhase = phase + 1;
 
-  // Gera valores aleatórios apenas quando current muda
   useEffect(() => {
     const props = phaseQuestions[current]?.options.map(() => ({
       volume: 0.25 + Math.random() * 0.1,
@@ -61,9 +85,15 @@ export default function Page() {
     setRandomProps(props || []);
   }, [current, phaseQuestions]);
 
+  function triggerGearSpin() {
+    gearsAnimation.start({
+      rotate: [0, 360],
+      transition: { duration: 0.8, ease: "easeInOut" },
+    });
+  }
+
   function handleOptionClick(optionIndex: number) {
     if (disableAll) return;
-
     const option: Option | undefined = question?.options[optionIndex];
     if (!option) return;
 
@@ -78,6 +108,8 @@ export default function Page() {
           setCurrent((c) => c + 1);
           setRemovedOptions([]);
           setDisableAll(false);
+          setIsCorrect(false);
+          setFeedback("");
         }, 500);
       } else {
         if (nextPhase <= TOTAL_PHASES) {
@@ -87,6 +119,7 @@ export default function Page() {
         }
       }
     } else {
+      triggerGearSpin();
       setLives((prev) => {
         const novo = prev - 1;
         if (novo <= 0) {
@@ -100,6 +133,7 @@ export default function Page() {
           setIsWrong(true);
           setFeedback(option.feedback || "");
           wrongAudioRef.current?.play();
+          if (isMobile) triggerGearSpin();
           return novo;
         }
       });
@@ -121,149 +155,107 @@ export default function Page() {
   return (
     <div
       key={phase}
-      className="flex min-h-screen w-dvw justify-between gap-4 font-game overflow-hidden relative"
+      className="flex flex-col lg:flex-row min-h-screen w-full justify-between gap-4 font-game overflow-hidden relative bg-cover bg-center"
       style={{ backgroundImage: "url('/texture.jpg')" }}
     >
-      {/* VIDAS */}
-      <aside className="flex-1 relative flex flex-col justify-center gap-6 overflow-visible">
-        <h1 className="absolute top-5 left-5 text-xl font-bold">Fase: {phase}-{current + 1}</h1>
-        <motion.div
-          initial={{ x: -300, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ type: "spring", stiffness: 100, damping: 15, duration: 1.2 }}
-          className="absolute top-1/2 -translate-y-1/2 left-[-180px] z-0"
-        >
-          <Image
-            src="/images/fundo_engrena.png"
-            alt="fundo engrena"
-            width={280}
-            height={100}
-            priority
-          />
-        </motion.div>
+      {/* FASE STEAMPUNK - Desktop */}
+      <div className="hidden lg:block fixed top-8 left-8 z-50">
+        <div className="relative">
+          <div className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3">
+            <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
 
-        {Array.from({ length: 3 }).map((_, v) => (
-          <motion.img
-            key={v}
-            src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
-            alt="gear"
-            className="h-20 w-20 relative z-10"
-            initial={{ x: -200, opacity: 0 }}
-            animate={{ x: 0, opacity: 1, rotate: v < lives ? 360 : 0 }}
-            transition={{ type: "spring", stiffness: 120, damping: 12, duration: 1 }}
-          />
-        ))}
-      </aside>
-    
-
-      {/* PERGUNTA + OPÇÕES */}
-      <main className="flex-4 flex flex-col justify-between items-center py-6 w-full relative">
-        {/* DIÁLOGOS DE FEEDBACK */}
-        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-          <DialogContent
-            className="z-110 h-48 text-center"
-            style={{
-              backgroundImage: "url('/textures/mesa_western.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
-            <DialogTitle>RESPOSTA CORRETA!!</DialogTitle>
-            <p>{feedback}</p>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isWrong} onOpenChange={setIsWrong}>
-          <DialogContent
-            className="z-111h-48 text-center"
-            style={{
-              backgroundImage: "url('/textures/mesa_western.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
-            <DialogTitle>RESPOSTA INCORRETA!</DialogTitle>
-            <p>{feedback}</p>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
-          <DialogContent
-            className="z-110 h-48 text-center"
-            style={{
-              backgroundImage: "url('/textures/mesa_western.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-          >
-            <DialogTitle>FIM DE FASE!</DialogTitle>
-            <p>
-              Você concluiu a Fase {phase}! Preparando para a Fase {nextPhase}...
-            </p>
-            <Button
-              onClick={() => router.push(`/levels/${nextPhase}`)}
-              className="bg-brand-primary hover:bg-brand-primary-dark hover:cursor-pointer transition-colors duration-300"
+            <h1
+              className="text-3xl font-bold tracking-wider drop-shadow-lg"
+              style={{
+                color: "#d8603b",
+                textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
+              }}
             >
-              Próxima Fase
-            </Button>
-          </DialogContent>
-        </Dialog>
+              FASE {phase}-{current + 1}
+            </h1>
+          </div>
+        </div>
+      </div>
 
-        {/* CORRENTES */}
+      {/* PAINEL LATERAL - Desktop */}
+      <aside
+        className="hidden lg:flex flex-col items-center justify-center relative"
+        style={{
+          width: "240px",
+          height: "100vh",
+          marginLeft: "-100px",
+        }}
+      >
         <motion.div
-          initial={initialDrop}
-          animate={dropAnimation}
-          transition={{ ...dropTransition, delay: 0 }}
-          className="absolute  top-0 left-[calc(50%-380px)]"
+          animate={gearsPanelAnimation}
+          className="relative flex flex-col items-center justify-center w-full h-full"
         >
-          <Image
-            src="/images/corrente_esquerda.png"
-            alt="Corrente esquerda"
-            width={80}
-            height={300}
-          />
-        </motion.div>
+          <div className="absolute w-full h-full top-0 left-0">
+            <Image src="/images/fundo_engrena.png" alt="Painel" fill style={{ objectFit: "contain" }} />
+          </div>
 
-        <motion.div
-          initial={initialDrop}
-          animate={dropAnimation}
-          transition={{ ...dropTransition, delay: 0 }}
-          className="absolute  top-0 right-[calc(50%-380px)]"
-        >
-          <Image
-            src="/images/corrente_direita.png"
-            alt="Corrente direita"
-            width={100}
-            height={350}
-          />
+          <div className="relative flex flex-col items-center justify-center w-full z-10" style={{ top: "-12px", gap: "22px" }}>
+            <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
+              {Array.from({ length: 3 }).map((_, v) => (
+                <motion.div key={v} animate={gearsAnimation} style={{ width: 84, height: 84 }}>
+                  <Image
+                    src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
+                    alt="vida"
+                    width={84}
+                    height={84}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
+      </aside>
 
-        {/* LETREIRO */}
+      {/* CONTEÚDO CENTRAL */}
+      <main className="flex-1 flex flex-col justify-start items-center py-6 w-full relative">
+        {/* Correntes MOBILE */}
         <motion.div
           initial={initialDrop}
           animate={dropAnimation}
           transition={dropTransition}
-          className="relative w-5/7 h-22 mt-4 flex items-center justify-center shadow-2xl z-20"
+          className="lg:hidden absolute -top-2 left-[10%] z-40"
+        >
+          <Image src="/images/corrente_esquerda.png" alt="Corrente esquerda" width={64} height={220} />
+        </motion.div>
+
+        <motion.div
+          initial={initialDrop}
+          animate={dropAnimation}
+          transition={dropTransition}
+          className="lg:hidden absolute -top-2 right-[10%] z-40"
+        >
+          <Image src="/images/corrente_direita.png" alt="Corrente direita" width={80} height={220} />
+        </motion.div>
+
+        {/* Letreiro */}
+        <motion.div
+          initial={initialDrop}
+          animate={dropAnimation}
+          transition={dropTransition}
+          className="relative w-[90%] max-w-[850px] min-h-[95px] px-4 flex items-center justify-center text-center shadow-xl bg-center bg-cover z-50"
           style={{
             backgroundImage: "url('/textures/letreiro.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
+            marginTop: isMobile ? '6px' : '20px',
+            minHeight: isMobile ? '60px' : '95px',
           }}
         >
-          <span className="text-black text-xl font-semibold text-center">
+          <span className={`text-black font-semibold ${isMobile ? 'text-lg' : 'text-xl'} ${!isMobile ? 'md:text-2xl' : ''}`}>
             {question.question}
           </span>
         </motion.div>
 
-        {/* CARTAS */}
-        <div className="w-full flex justify-center items-end gap-0 mt-8 px-6 relative h-80 overflow-visible">
+        {/* Cartas */}
+        <div className="w-full flex flex-wrap justify-center items-end gap-3 mt-12 px-4 relative min-h-[300px] overflow-visible">
           {question.options.map((opt, index) => {
             if (removedOptions.includes(index)) return null;
-
             const total = question.options.length;
             const fanSpread = 30;
             const startAngle = -fanSpread / 2;
@@ -279,23 +271,54 @@ export default function Page() {
                 initialRotate={rotate}
                 isFocused={focusedCard === index}
                 setFocusedCard={setFocusedCard}
+                isMobile={isMobile}
                 initialAnimation={{
                   y: 200,
-                  rotate: rotate,
+                  rotate,
                   opacity: 0,
                   animateY: 0,
                   animateOpacity: 1,
                   animateRotate: rotate,
-                  delay: index * 0.2,
+                  delay: index * 0.15,
                 }}
                 style={{
                   perspective: 1200,
                   "--drop-volume": randomProps[index]?.volume ?? 0.3,
                   "--drop-pitch": randomProps[index]?.pitch ?? 1,
+                  width: isMobile ? '120px' : '176px',
+                  height: isMobile ? '160px' : '240px',
                 } as React.CSSProperties}
+                textStyle={{
+                  fontSize: isMobile ? '0.8rem' : '1rem',
+                }}
               />
             );
           })}
+        </div>
+
+        {/* FASE-X-Y e engrenagens MOBILE - parte inferior */}
+        <div className="flex flex-col items-center gap-4 mt-8 lg:hidden absolute bottom-6">
+          <h1
+            className="text-black font-extrabold drop-shadow-2xl tracking-wider"
+            style={{ fontSize: isMobile ? '1.5rem' : '1.875rem' }}
+          >
+            Fase {phase}-{current + 1}
+          </h1>
+          <div className="flex gap-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <motion.div
+                key={i}
+                animate={gearsAnimation}
+              >
+                <Image
+                  src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
+                  alt="vida"
+                  width={60}
+                  height={60}
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </main>
     </div>
