@@ -111,13 +111,13 @@ export default function Page() {
       setFeedback(option.feedback || "");
       correctAudioRef.current?.play();
 
-      if (current + 1 < phaseQuestions.length) {
+            if (current + 1 < phaseQuestions.length) {
         setTimeout(() => {
           setCurrent((c) => c + 1);
           setRemovedOptions([]);
           setDisableAll(false);
-          setIsCorrect(false);
-          setFeedback("");
+          // ❌ NÃO fecha o modal aqui
+          
         }, 500);
       } else {
         if (nextPhase <= TOTAL_PHASES) {
@@ -357,83 +357,143 @@ export default function Page() {
           })}
         </div>
 
-        {/* Dialogs */}
-        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-          <DialogContent
-            onClick={() => setIsCorrect(false)}
-            className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
-            style={{
-              backgroundImage: "url('/images/fundo_modal.png')",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              width: "90%", // responsivo
-              maxWidth: "600px", // diminuiu no geral
-              height: "350px",
-              borderRadius: "12px",
-              padding: "0 30px",
-            }}
-          >
-            <DialogTitle className="mb-6 text-center" style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
-              RESPOSTA CORRETA!!
-            </DialogTitle>
-            <p className="text-center" style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
-              {feedback}
-            </p>
-          </DialogContent>
-        </Dialog>
+        {/* Dialog Correto */}
+<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+  <DialogContent
+    onClick={() => setIsCorrect(false)} // clique dentro fecha
+    className="z-110 flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%",
+      maxWidth: "600px",
+      height: "350px",
+      borderRadius: "12px",
+      padding: "20px 30px",
+    }}
+  >
+    <div className="flex flex-col justify-center items-center h-full gap-10">
+      <DialogTitle
+        className="text-center flex-1 flex items-center justify-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "2.5rem",
+          lineHeight: "1.8",
+          fontWeight: "bold",
+        }}
+      >
+        RESPOSTA CORRETA!!
+      </DialogTitle>
+      <p
+        className="text-center flex-1 flex items-center justify-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "2rem",
+          lineHeight: "2",
+          fontWeight: "normal",
+          textAlign: "center",
+        }}
+      >
+        {feedback}
+      </p>
+    </div>
+  </DialogContent>
+</Dialog>
 
-        <Dialog open={isWrong} onOpenChange={setIsWrong}>
-          <DialogContent
-            onClick={() => setIsWrong(false)}
-            className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
-            style={{
-              backgroundImage: "url('/images/fundo_modal.png')",
-              backgroundSize: "cover",
-              backgroundRepeat: "no-repeat",
-              backgroundPosition: "center",
-              width: "90%", // responsivo
-              maxWidth: "600px", // diminuiu no geral
-              height: "350px",
-              borderRadius: "12px",
-              padding: "0 30px",
-            }}
-          >
-            <DialogTitle className="mb-6 text-center" style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
-              RESPOSTA INCORRETA!
-            </DialogTitle>
-            <p className="text-center" style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
-              {feedback}
-            </p>
-          </DialogContent>
-        </Dialog>
+{/* Dialog Correto */}
+<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+  <DialogContent
+    onClick={() => setIsCorrect(false)}
+    className="z-110 flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%",
+      maxWidth: "600px",
+      height: "350px",
+      borderRadius: "12px",
+      padding: "20px 30px",
+    }}
+  >
+    <div className="flex flex-col justify-center items-center h-full gap-5">
+      <DialogTitle
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "2rem", // um pouco maior
+          lineHeight: "1.5",
+          fontWeight: "bold",
+        }}
+      >
+        RESPOSTA CORRETA!!
+      </DialogTitle>
+      <p
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "1.6rem", // um pouco maior
+          lineHeight: "1.8",
+          fontWeight: "normal",
+          maxWidth: "250px",
+          textAlign: "center",
+        }}
+      >
+        {feedback}
+      </p>
+    </div>
+  </DialogContent>
+</Dialog>
 
-        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
-          <DialogContent
-            className="z-110 text-center flex flex-col justify-center items-center"
-            style={{
-              backgroundImage: "url('/textures/mesa_western.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              width: "90%", // responsivo
-              maxWidth: "600px", // diminuiu no geral
-              height: "350px",
-              borderRadius: "12px",
-              padding: "0 30px",
-            }}
-          >
-            <DialogTitle className="mb-6 text-center" style={{ fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
-              FIM DE FASE!
-            </DialogTitle>
-            <p className="text-center" style={{ fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
-              Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...
-            </p>
-            <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-6 bg-brand-primary hover:bg-brand-primary-dark">
-              Próxima Fase
-            </Button>
-          </DialogContent>
-        </Dialog>
+{/* Dialog Incorreto */}
+<Dialog open={isWrong} onOpenChange={setIsWrong}>
+  <DialogContent
+    onClick={() => setIsWrong(false)}
+    className="z-110 flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%",
+      maxWidth: "600px",
+      height: "350px",
+      borderRadius: "12px",
+      padding: "20px 30px",
+    }}
+  >
+    <div className="flex flex-col justify-center items-center h-full gap-5">
+      <DialogTitle
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "2rem",
+          lineHeight: "1.5",
+          fontWeight: "bold",
+        }}
+      >
+        RESPOSTA INCORRETA!
+      </DialogTitle>
+      <p
+        className="text-center"
+        style={{
+          color: "#4e4540",
+          fontSize: "1.6rem",
+          lineHeight: "1.8",
+          fontWeight: "normal",
+          maxWidth: "250px",
+          textAlign: "center",
+        }}
+      >
+        {feedback}
+      </p>
+    </div>
+  </DialogContent>
+</Dialog>
+
       </main>
     </div>
   );
