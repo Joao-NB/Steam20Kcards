@@ -16,12 +16,23 @@ export default function Home() {
 
   const imageVariants = {
     hidden: { y: -100, opacity: 0, rotate: -10 },
-    visible: { y: 0, opacity: 1, rotate: 0, transition: { type: "spring", stiffness: 150, damping: 12 } },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      rotate: 0, 
+      transition: { type: "spring" as const, stiffness: 150, damping: 12 } // ✅ corrigido
+    },
   };
 
   const buttonVariants = {
     hidden: { y: 50, opacity: 0, rotate: -5, scale: 0.8 },
-    visible: { y: 0, opacity: 1, rotate: 0, scale: 1, transition: { type: "spring", stiffness: 200, damping: 15 } },
+    visible: { 
+      y: 0, 
+      opacity: 1, 
+      rotate: 0, 
+      scale: 1, 
+      transition: { type: "spring" as const, stiffness: 200, damping: 15 } // ✅ corrigido
+    },
   };
 
   return (
@@ -43,10 +54,10 @@ export default function Home() {
           <Image
             src="/Vector.svg"
             alt="Vector"
-            width={600} // ajuste de largura máximo
-            height={600} // ajuste de altura proporcional
+            width={600}
+            height={600}
             className="w-full max-w-md md:max-w-full h-auto object-contain"
-            priority // carrega rápido ao abrir a página
+            priority
           />
         </motion.div>
 

@@ -150,7 +150,7 @@ export default function Page() {
 
   const dropAnimation = { y: 0, opacity: 1 };
   const initialDrop = { y: -200, opacity: 0 };
-  const dropTransition: Transition = { type: "spring", stiffness: 120, damping: 12 };
+  const dropTransition: Transition = { type: "spring" as const, stiffness: 120, damping: 12 };
 
   return (
     <div
@@ -158,6 +158,33 @@ export default function Page() {
       className="flex flex-col lg:flex-row min-h-screen w-full justify-between gap-4 font-game overflow-hidden relative bg-cover bg-center"
       style={{ backgroundImage: "url('/texture.jpg')" }}
     >
+      {/* Correntes - MOBILE */}
+      <motion.div
+        initial={initialDrop}
+        animate={dropAnimation}
+        transition={dropTransition}
+        className="lg:hidden absolute -top-2 left-[10%] z-40"
+      >
+        <Image src="/images/corrente_esquerda.png" alt="Corrente esquerda" width={64} height={220} />
+      </motion.div>
+
+      <motion.div
+        initial={initialDrop}
+        animate={dropAnimation}
+        transition={dropTransition}
+        className="lg:hidden absolute -top-2 right-[10%] z-40"
+      >
+        <Image src="/images/corrente_direita.png" alt="Corrente direita" width={80} height={220} />
+      </motion.div>
+
+      {/* Correntes - DESKTOP (posição antiga) */}
+      <motion.div initial={initialDrop} animate={dropAnimation} className="hidden lg:block absolute -top-5 left-[30%] z-40">
+  <Image src="/images/corrente_esquerda.png" alt="Corrente" width={90} height={300} />
+</motion.div>
+<motion.div initial={initialDrop} animate={dropAnimation} className="hidden lg:block absolute -top-5 right-[20%] z-40">
+  <Image src="/images/corrente_direita.png" alt="Corrente" width={120} height={300} />
+</motion.div>
+
       {/* FASE STEAMPUNK - Desktop */}
       <div className="hidden lg:block fixed top-8 left-8 z-50">
         <div className="relative">
@@ -216,25 +243,6 @@ export default function Page() {
 
       {/* CONTEÚDO CENTRAL */}
       <main className="flex-1 flex flex-col justify-start items-center py-6 w-full relative">
-        {/* Correntes MOBILE */}
-        <motion.div
-          initial={initialDrop}
-          animate={dropAnimation}
-          transition={dropTransition}
-          className="lg:hidden absolute -top-2 left-[10%] z-40"
-        >
-          <Image src="/images/corrente_esquerda.png" alt="Corrente esquerda" width={64} height={220} />
-        </motion.div>
-
-        <motion.div
-          initial={initialDrop}
-          animate={dropAnimation}
-          transition={dropTransition}
-          className="lg:hidden absolute -top-2 right-[10%] z-40"
-        >
-          <Image src="/images/corrente_direita.png" alt="Corrente direita" width={80} height={220} />
-        </motion.div>
-
         {/* Letreiro */}
         <motion.div
           initial={initialDrop}
@@ -320,6 +328,32 @@ export default function Page() {
             ))}
           </div>
         </div>
+
+        {/* Dialogs */}
+        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
+            <DialogTitle>RESPOSTA CORRETA!!</DialogTitle>
+            <p>{feedback}</p>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isWrong} onOpenChange={setIsWrong}>
+          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
+            <DialogTitle>RESPOSTA INCORRETA!</DialogTitle>
+            <p>{feedback}</p>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
+          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
+            <DialogTitle>FIM DE FASE!</DialogTitle>
+            <p>Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...</p>
+            <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-2 bg-brand-primary hover:bg-brand-primary-dark">
+              Próxima Fase
+            </Button>
+          </DialogContent>
+        </Dialog>
+
       </main>
     </div>
   );

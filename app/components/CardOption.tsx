@@ -22,7 +22,7 @@ interface CardOptionProps {
   };
   style?: React.CSSProperties;
   isMobile?: boolean;
-  textStyle?: React.CSSProperties; // Novo prop para personalizar texto
+  textStyle?: React.CSSProperties;
 }
 
 export default function CardOption({
@@ -43,11 +43,9 @@ export default function CardOption({
   const [dropVolume, setDropVolume] = useState(0.3);
   const [dropPitch, setDropPitch] = useState(1);
 
-  // Controle de movimento aleatório contínuo
   const randomAnim = useAnimation();
 
   useEffect(() => {
-    // Sons
     hoverAudio.current = new Audio("/sounds/card_flip.wav");
     hoverAudio.current.volume = 0.3;
 
@@ -61,24 +59,24 @@ export default function CardOption({
 
     const timer = setTimeout(() => dropAudio.current?.play(), (initialAnimation?.delay ?? 0) * 1000);
 
-    // Animação aleatória contínua mais suave
-    const animateRandom = async () => {
-      while (true) {
-        await randomAnim.start({
-          x: (Math.random() - 0.5) * 3,       // movimento horizontal menor
-          y: (Math.random() - 0.5) * 3,       // movimento vertical menor
-          rotate: (Math.random() - 0.5) * 2,  // rotação leve
-          transition: { 
-            duration: 2 + Math.random() * 2,  // duração maior e variada
-            ease: "easeInOut"                 // suaviza a transição
-          },
-        });
-      }
-    };
-    animateRandom();
+    // animação aleatória contínua mais suave com setInterval
+    const interval = setInterval(() => {
+      randomAnim.start({
+        x: (Math.random() - 0.5) * 3,
+        y: (Math.random() - 0.5) * 3,
+        rotate: (Math.random() - 0.5) * 2,
+        transition: {
+          duration: 2 + Math.random() * 2,
+          ease: "easeInOut" as const,
+        },
+      });
+    }, 2500);
 
-    return () => clearTimeout(timer);
-  }, []);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+  }, [initialAnimation?.delay, randomAnim]);
 
   return (
     <motion.div
@@ -99,16 +97,16 @@ export default function CardOption({
         scale: isFocused ? 1.15 : 1,
       }}
       transition={{
-        type: "spring",
+        type: "spring" as const,
         stiffness: 200,
         damping: 20,
         delay: initialAnimation?.delay ?? 0,
       }}
-      className={`perspective cursor-pointer relative`}
+      className="perspective cursor-pointer relative"
       style={{
         ...style,
-        width: isMobile ? '120px' : '176px',
-        height: isMobile ? '160px' : '240px',
+        width: isMobile ? "120px" : "176px",
+        height: isMobile ? "160px" : "240px",
         "--drop-volume": dropVolume,
         "--drop-pitch": dropPitch,
         zIndex: isFocused ? 999 : 1,
@@ -117,10 +115,12 @@ export default function CardOption({
       } as React.CSSProperties}
     >
       <motion.div
-        onClick={() => { if (!disabled && isFocused) onClick(); }}
+        onClick={() => {
+          if (!disabled && isFocused) onClick();
+        }}
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-        animate={randomAnim} // movimento contínuo aleatório suave
+        animate={randomAnim} // animação contínua aleatória suave
       >
         {/* Frente da carta */}
         <motion.div
@@ -139,7 +139,7 @@ export default function CardOption({
           <span
             className="px-2 text-center font-bold text-[#2E1B00]"
             style={{
-              fontSize: isMobile ? '0.8rem' : '1rem', // texto menor no mobile
+              fontSize: isMobile ? "0.8rem" : "1rem",
               ...textStyle,
             }}
           >
