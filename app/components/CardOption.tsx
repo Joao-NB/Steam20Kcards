@@ -1,3 +1,4 @@
+// 🔥 components/CardOption.tsx
 "use client";
 
 import { motion, useAnimation } from "framer-motion";
@@ -23,6 +24,7 @@ interface CardOptionProps {
   style?: React.CSSProperties;
   isMobile?: boolean;
   textStyle?: React.CSSProperties;
+  onHoverEffect?: (index: number) => void; // Para animar vizinhas
 }
 
 export default function CardOption({
@@ -37,6 +39,7 @@ export default function CardOption({
   style = {},
   isMobile = false,
   textStyle = {},
+  onHoverEffect,
 }: CardOptionProps) {
   const hoverAudio = useRef<HTMLAudioElement | null>(null);
   const dropAudio = useRef<HTMLAudioElement | null>(null);
@@ -59,18 +62,18 @@ export default function CardOption({
 
     const timer = setTimeout(() => dropAudio.current?.play(), (initialAnimation?.delay ?? 0) * 1000);
 
-    // animação aleatória contínua mais suave com setInterval
+    // animação aleatória contínua mais perceptível
     const interval = setInterval(() => {
       randomAnim.start({
-        x: (Math.random() - 0.5) * 3,
-        y: (Math.random() - 0.5) * 3,
-        rotate: (Math.random() - 0.5) * 2,
+        x: (Math.random() - 0.5) * 6,
+        y: (Math.random() - 0.5) * 6,
+        rotate: (Math.random() - 0.5) * 4,
         transition: {
-          duration: 2 + Math.random() * 2,
+          duration: 1 + Math.random() * 0.5,
           ease: "easeInOut" as const,
         },
       });
-    }, 2500);
+    }, 1000);
 
     return () => {
       clearTimeout(timer);
@@ -83,6 +86,7 @@ export default function CardOption({
       onMouseEnter={() => {
         setFocusedCard(index);
         hoverAudio.current?.play();
+        if (onHoverEffect) onHoverEffect(index);
       }}
       onMouseLeave={() => setFocusedCard(null)}
       initial={{
@@ -98,8 +102,8 @@ export default function CardOption({
       }}
       transition={{
         type: "spring" as const,
-        stiffness: 200,
-        damping: 20,
+        stiffness: 220,
+        damping: 15,
         delay: initialAnimation?.delay ?? 0,
       }}
       className="perspective cursor-pointer relative"
@@ -120,7 +124,7 @@ export default function CardOption({
         }}
         className="relative w-full h-full"
         style={{ transformStyle: "preserve-3d", perspective: 1200 }}
-        animate={randomAnim} // animação contínua aleatória suave
+        animate={randomAnim} // animação contínua aleatória
       >
         {/* Frente da carta */}
         <motion.div

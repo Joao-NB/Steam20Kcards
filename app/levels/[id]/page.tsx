@@ -1,4 +1,4 @@
-// 🔥 PAGE.TSX - fase-x-y desktop e mobile corrigidos + FASE X-Y Desktop estilo steampunk
+// 🔥 PAGE.TSX
 "use client";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -260,14 +260,45 @@ export default function Page() {
           </span>
         </motion.div>
 
+        {/* FASE-X-Y e vidas MOBILE (acima das cartas) */}
+        {isMobile && (
+          <div className="flex flex-col items-center gap-2 mt-2">
+            <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: '1.25rem' }}>
+              Fase {phase}-{current + 1}
+            </h1>
+            <div className="flex gap-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <motion.div key={i} animate={gearsAnimation}>
+                  <Image
+                    src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
+                    alt="vida"
+                    width={32}
+                    height={32}
+                  />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Cartas */}
-        <div className="w-full flex flex-wrap justify-center items-end gap-3 mt-12 px-4 relative min-h-[300px] overflow-visible">
+        <div className="w-full flex flex-wrap justify-center items-end gap-3 mt-4 px-4 relative min-h-[300px] overflow-visible">
           {question.options.map((opt, index) => {
             if (removedOptions.includes(index)) return null;
             const total = question.options.length;
             const fanSpread = 30;
             const startAngle = -fanSpread / 2;
             const rotate = startAngle + (fanSpread / (total - 1)) * index;
+
+            let adjacentOffset = { x: 0, y: 0 };
+            if (focusedCard !== null) {
+              const diff = index - focusedCard;
+              if (Math.abs(diff) === 1) {
+                adjacentOffset = { x: diff * 10, y: -5 };
+              } else if (diff === 0) {
+                adjacentOffset = { x: 0, y: -20 };
+              }
+            }
 
             return (
               <CardOption
@@ -284,10 +315,10 @@ export default function Page() {
                   y: 200,
                   rotate,
                   opacity: 0,
-                  animateY: 0,
+                  animateY: adjacentOffset.y,
                   animateOpacity: 1,
                   animateRotate: rotate,
-                  delay: index * 0.15,
+                  delay: index * 0.1,
                 }}
                 style={{
                   perspective: 1200,
@@ -302,30 +333,6 @@ export default function Page() {
               />
             );
           })}
-        </div>
-
-        {/* FASE-X-Y e engrenagens MOBILE - lado a lado */}
-        <div
-          className={`flex items-center gap-4 mt-8 lg:hidden absolute bottom-6`}
-        >
-          <h1
-            className="text-black font-extrabold drop-shadow-2xl tracking-wider"
-            style={{ fontSize: isMobile ? '1.5rem' : '1.875rem' }}
-          >
-            Fase {phase}-{current + 1}
-          </h1>
-          <div className="flex gap-2">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <motion.div key={i} animate={gearsAnimation}>
-                <Image
-                  src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
-                  alt="vida"
-                  width={40}
-                  height={40}
-                />
-              </motion.div>
-            ))}
-          </div>
         </div>
 
         {/* Dialogs */}
@@ -352,7 +359,6 @@ export default function Page() {
             </Button>
           </DialogContent>
         </Dialog>
-
       </main>
     </div>
   );
