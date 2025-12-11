@@ -96,7 +96,7 @@ export default function TutorialPage() {
                 className="leading-relaxed text-center uppercase text-[#4e4540] max-w-[90%] sm:max-w-[550px] mx-auto break-words"
                 style={{ 
                   fontSize: currentModal === 5 && isMobile 
-                    ? '1.2rem'  // 🔹 texto menor no sexto modal mobile
+                    ? '1.2rem'
                     : currentModal === 5
                       ? '2rem'
                       : isMobile
@@ -110,7 +110,13 @@ export default function TutorialPage() {
 
               {currentModal === 5 && (
                 <div className="flex flex-row justify-center items-center gap-3 mt-4">
-                  {/* Engrenagem animada na ponta */}
+                  {/* Engrenagem estática esquerda */}
+                  <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
+                  
+                  {/* Engrenagem estática do meio */}
+                  <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
+
+                  {/* Engrenagem animada direita */}
                   <motion.div
                     className="relative"
                     style={{ width: isMobile ? 32 : 50, height: isMobile ? 32 : 50 }}
@@ -134,10 +140,6 @@ export default function TutorialPage() {
                       transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 0.5 }}
                     />
                   </motion.div>
-
-                  {/* Engrenagem estática */}
-                  <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
-                  <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
                 </div>
               )}
             </div>
