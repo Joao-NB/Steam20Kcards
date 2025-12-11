@@ -344,29 +344,103 @@ export default function Page() {
         </div>
 
         {/* Dialogs */}
-        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
-            <DialogTitle>RESPOSTA CORRETA!!</DialogTitle>
-            <p>{feedback}</p>
-          </DialogContent>
-        </Dialog>
+<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+  <DialogContent
+    onClick={() => setIsCorrect(false)}
+    className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%", // responsivo
+      maxWidth: "600px", // diminuiu no geral
+      height: "350px",
+      borderRadius: "12px",
+      padding: "0 30px",
+    }}
+  >
+    <DialogTitle
+      className="mb-6 text-center"
+      style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
+    >
+      RESPOSTA CORRETA!!
+    </DialogTitle>
+    <p
+      className="text-center"
+      style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
+    >
+      {feedback}
+    </p>
+  </DialogContent>
+</Dialog>
 
-        <Dialog open={isWrong} onOpenChange={setIsWrong}>
-          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
-            <DialogTitle>RESPOSTA INCORRETA!</DialogTitle>
-            <p>{feedback}</p>
-          </DialogContent>
-        </Dialog>
+<Dialog open={isWrong} onOpenChange={setIsWrong}>
+  <DialogContent
+    onClick={() => setIsWrong(false)}
+    className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
+    style={{
+      backgroundImage: "url('/images/fundo_modal.png')",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "center",
+      width: "90%", // responsivo
+      maxWidth: "600px", // diminuiu no geral
+      height: "350px",
+      borderRadius: "12px",
+      padding: "0 30px",
+    }}
+  >
+    <DialogTitle
+      className="mb-6 text-center"
+      style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
+    >
+      RESPOSTA INCORRETA!
+    </DialogTitle>
+    <p
+      className="text-center"
+      style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
+    >
+      {feedback}
+    </p>
+  </DialogContent>
+</Dialog>
 
-        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
-          <DialogContent className="z-110 h-48 text-center" style={{ backgroundImage: "url('/textures/mesa_western.jpg')", backgroundSize: "cover" }}>
-            <DialogTitle>FIM DE FASE!</DialogTitle>
-            <p>Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...</p>
-            <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-2 bg-brand-primary hover:bg-brand-primary-dark">
-              Próxima Fase
-            </Button>
-          </DialogContent>
-        </Dialog>
+<Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
+  <DialogContent
+    className="z-110 text-center flex flex-col justify-center items-center"
+    style={{
+      backgroundImage: "url('/textures/mesa_western.jpg')",
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      width: "90%", // responsivo
+      maxWidth: "600px", // diminuiu no geral
+      height: "350px",
+      borderRadius: "12px",
+      padding: "0 30px",
+    }}
+  >
+    <DialogTitle
+      className="mb-6 text-center"
+      style={{ fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
+    >
+      FIM DE FASE!
+    </DialogTitle>
+    <p
+      className="text-center"
+      style={{ fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
+    >
+      Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...
+    </p>
+    <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-6 bg-brand-primary hover:bg-brand-primary-dark">
+      Próxima Fase
+    </Button>
+  </DialogContent>
+</Dialog>
+
+
+
       </main>
     </div>
   );

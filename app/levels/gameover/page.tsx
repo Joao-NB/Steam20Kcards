@@ -33,7 +33,7 @@ export default function Home() {
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
                 className="
-                  border-2 border-brand-primary font-bold text-2xl text-brand-primary
+                  border-4 border-brand-primary font-bold text-2xl text-brand-primary
                   px-8 py-5 w-56 text-center rounded-b-4xl cursor-pointer
                   transition-all duration-300
                   hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
@@ -50,7 +50,7 @@ export default function Home() {
                   onMouseEnter={() => setHoverEffect(true)}
                   onMouseLeave={() => setHoverEffect(false)}
                   className="
-                  border-2 border-brand-primary font-bold text-xl text-brand-primary
+                  border-4 border-brand-primary font-bold text-xl text-brand-primary
                   px-6 py-4 w-48 text-center rounded-b-4xl cursor-pointer
                   transition-all duration-300
                   hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
@@ -114,7 +114,7 @@ export default function Home() {
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
                 className="
-                  border-2 border-brand-primary font-bold text-lg text-brand-primary
+                  border-4 border-brand-primary font-bold text-lg text-brand-primary
                   px-5 py-3 w-40 text-center rounded-b-4xl cursor-pointer
                   transition-all duration-300
                   hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black
