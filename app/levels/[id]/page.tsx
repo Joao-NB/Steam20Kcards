@@ -8,7 +8,6 @@ import { motion, Transition, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import { Button } from "@/components/ui/button";
 
 interface RandomProps {
   volume: number;
@@ -38,7 +37,6 @@ export default function Page() {
   const [randomProps, setRandomProps] = useState<RandomProps[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
-  // 🔥 Desativa rolagem da página totalmente
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => {
@@ -111,13 +109,11 @@ export default function Page() {
       setFeedback(option.feedback || "");
       correctAudioRef.current?.play();
 
-            if (current + 1 < phaseQuestions.length) {
+      if (current + 1 < phaseQuestions.length) {
         setTimeout(() => {
           setCurrent((c) => c + 1);
           setRemovedOptions([]);
           setDisableAll(false);
-          // ❌ NÃO fecha o modal aqui
-          
         }, 500);
       } else {
         if (nextPhase <= TOTAL_PHASES) {
@@ -193,44 +189,18 @@ export default function Page() {
         <Image src="/images/corrente_direita.png" alt="Corrente" width={120} height={300} />
       </motion.div>
 
-      {/* FASE STEAMPUNK - Desktop */}
-      <div className="hidden lg:block fixed top-8 left-8 z-50">
-        <div className="relative">
-          <motion.div
-            initial={{ opacity: 0, y: 25, scaleY: 1 }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scaleY: [1, 1.04, 1],
-            }}
-            transition={{
-              opacity: { duration: 0.5, ease: "easeOut" },
-              y: { duration: 0.5, ease: "easeOut" },
-              scaleY: {
-                duration: 1.5,
-                repeat: Infinity,
-                repeatType: "reverse",
-                ease: "easeInOut",
-              },
-            }}
-            className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3"
-          >
-            <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-            <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-
-            <h1
-              className="text-3xl font-bold tracking-wider drop-shadow-lg"
-              style={{
-                color: "#d8603b",
-                textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
-              }}
-            >
-              FASE {phase}-{current + 1}
-            </h1>
-          </motion.div>
-        </div>
+      {/* FASE-X-Y - Desktop Simples */}
+      <div className="hidden lg:flex fixed top-8 left-8 z-50">
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="relative px-4 py-2 "
+        >
+          <h1 className="text-2xl font-bold text-black tracking-wide">
+            Fase {phase}-{current + 1}
+          </h1>
+        </motion.div>
       </div>
 
       {/* PAINEL LATERAL - Desktop */}
@@ -243,17 +213,15 @@ export default function Page() {
         }}
       >
         <motion.div
-          initial={{ opacity: 0, y: -20 }} // animação de entrada
-          animate={{ opacity: 1, y: 0 }} // estado final fixo
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="relative flex flex-col items-center justify-center w-full h-full"
         >
-          {/* Fundo */}
           <div className="absolute w-full h-full top-0 left-0">
             <Image src="/images/fundo_engrena.png" alt="Painel" fill style={{ objectFit: "contain" }} />
           </div>
 
-          {/* Engrenagens / Vidas */}
           <div className="relative flex flex-col items-center justify-center w-full z-10" style={{ top: "-12px", gap: "22px" }}>
             <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
               {Array.from({ length: 3 }).map((_, v) => (
@@ -285,7 +253,7 @@ export default function Page() {
           </span>
         </motion.div>
 
-        {/* FASE-X-Y e vidas MOBILE (acima das cartas) */}
+        {/* FASE-X-Y e vidas MOBILE */}
         {isMobile && (
           <div className="flex flex-col items-center gap-2 mt-2">
             <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: "1.3rem" }}>
@@ -340,15 +308,13 @@ export default function Page() {
                   animateRotate: rotate,
                   delay: index * 0.1,
                 }}
-                style={
-                  {
-                    perspective: 1200,
-                    "--drop-volume": randomProps[index]?.volume ?? 0.3,
-                    "--drop-pitch": randomProps[index]?.pitch ?? 1,
-                    width: isMobile ? "124px" : "176px",
-                    height: isMobile ? "164px" : "240px",
-                  } as React.CSSProperties
-                }
+                style={{
+                  perspective: 1200,
+                  "--drop-volume": randomProps[index]?.volume ?? 0.3,
+                  "--drop-pitch": randomProps[index]?.pitch ?? 1,
+                  width: isMobile ? "124px" : "176px",
+                  height: isMobile ? "164px" : "240px",
+                } as React.CSSProperties}
                 textStyle={{
                   fontSize: isMobile ? "0.85rem" : "1rem",
                 }}
@@ -358,142 +324,96 @@ export default function Page() {
         </div>
 
         {/* Dialog Correto */}
-<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-  <DialogContent
-    onClick={() => setIsCorrect(false)} // clique dentro fecha
-    className="z-110 flex flex-col justify-center items-center cursor-pointer"
-    style={{
-      backgroundImage: "url('/images/fundo_modal.png')",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      width: "90%",
-      maxWidth: "600px",
-      height: "350px",
-      borderRadius: "12px",
-      padding: "20px 30px",
-    }}
-  >
-    <div className="flex flex-col justify-center items-center h-full gap-10">
-      <DialogTitle
-        className="text-center flex-1 flex items-center justify-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "2.5rem",
-          lineHeight: "1.8",
-          fontWeight: "bold",
-        }}
-      >
-        RESPOSTA CORRETA!!
-      </DialogTitle>
-      <p
-        className="text-center flex-1 flex items-center justify-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "2rem",
-          lineHeight: "2",
-          fontWeight: "normal",
-          textAlign: "center",
-        }}
-      >
-        {feedback}
-      </p>
-    </div>
-  </DialogContent>
-</Dialog>
+        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+          <DialogContent
+            onClick={() => setIsCorrect(false)}
+            className="z-110 flex flex-col justify-center items-center cursor-pointer"
+            style={{
+              backgroundImage: "url('/images/fundo_modal.png')",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              width: "90%",
+              maxWidth: "600px",
+              height: "350px",
+              borderRadius: "12px",
+              padding: "20px 30px",
+            }}
+          >
+            <div className="flex flex-col justify-center items-center h-full gap-5">
+              <DialogTitle
+                className="text-center"
+                style={{
+                  color: "#4e4540",
+                  fontSize: "2rem",
+                  lineHeight: "1.5",
+                  fontWeight: "bold",
+                }}
+              >
+                RESPOSTA CORRETA!!
+              </DialogTitle>
+              <p
+                className="text-center"
+                style={{
+                  color: "#4e4540",
+                  fontSize: "1.6rem",
+                  lineHeight: "1.8",
+                  fontWeight: "normal",
+                  maxWidth: "250px",
+                  textAlign: "center",
+                }}
+              >
+                {feedback}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
 
-{/* Dialog Correto */}
-<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-  <DialogContent
-    onClick={() => setIsCorrect(false)}
-    className="z-110 flex flex-col justify-center items-center cursor-pointer"
-    style={{
-      backgroundImage: "url('/images/fundo_modal.png')",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      width: "90%",
-      maxWidth: "600px",
-      height: "350px",
-      borderRadius: "12px",
-      padding: "20px 30px",
-    }}
-  >
-    <div className="flex flex-col justify-center items-center h-full gap-5">
-      <DialogTitle
-        className="text-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "2rem", // um pouco maior
-          lineHeight: "1.5",
-          fontWeight: "bold",
-        }}
-      >
-        RESPOSTA CORRETA!!
-      </DialogTitle>
-      <p
-        className="text-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "1.6rem", // um pouco maior
-          lineHeight: "1.8",
-          fontWeight: "normal",
-          maxWidth: "250px",
-          textAlign: "center",
-        }}
-      >
-        {feedback}
-      </p>
-    </div>
-  </DialogContent>
-</Dialog>
-
-{/* Dialog Incorreto */}
-<Dialog open={isWrong} onOpenChange={setIsWrong}>
-  <DialogContent
-    onClick={() => setIsWrong(false)}
-    className="z-110 flex flex-col justify-center items-center cursor-pointer"
-    style={{
-      backgroundImage: "url('/images/fundo_modal.png')",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      width: "90%",
-      maxWidth: "600px",
-      height: "350px",
-      borderRadius: "12px",
-      padding: "20px 30px",
-    }}
-  >
-    <div className="flex flex-col justify-center items-center h-full gap-5">
-      <DialogTitle
-        className="text-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "2rem",
-          lineHeight: "1.5",
-          fontWeight: "bold",
-        }}
-      >
-        RESPOSTA INCORRETA!
-      </DialogTitle>
-      <p
-        className="text-center"
-        style={{
-          color: "#4e4540",
-          fontSize: "1.6rem",
-          lineHeight: "1.8",
-          fontWeight: "normal",
-          maxWidth: "250px",
-          textAlign: "center",
-        }}
-      >
-        {feedback}
-      </p>
-    </div>
-  </DialogContent>
-</Dialog>
-
+        {/* Dialog Incorreto */}
+        <Dialog open={isWrong} onOpenChange={setIsWrong}>
+          <DialogContent
+            onClick={() => setIsWrong(false)}
+            className="z-110 flex flex-col justify-center items-center cursor-pointer"
+            style={{
+              backgroundImage: "url('/images/fundo_modal.png')",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              width: "90%",
+              maxWidth: "600px",
+              height: "350px",
+              borderRadius: "12px",
+              padding: "20px 30px",
+            }}
+          >
+            <div className="flex flex-col justify-center items-center h-full gap-5">
+              <DialogTitle
+                className="text-center"
+                style={{
+                  color: "#4e4540",
+                  fontSize: "2rem",
+                  lineHeight: "1.5",
+                  fontWeight: "bold",
+                }}
+              >
+                RESPOSTA INCORRETA!
+              </DialogTitle>
+              <p
+                className="text-center"
+                style={{
+                  color: "#4e4540",
+                  fontSize: "1.6rem",
+                  lineHeight: "1.8",
+                  fontWeight: "normal",
+                  maxWidth: "250px",
+                  textAlign: "center",
+                }}
+              >
+                {feedback}
+              </p>
+            </div>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

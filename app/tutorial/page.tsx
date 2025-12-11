@@ -20,13 +20,13 @@ export default function TutorialPage() {
     "BEM VINDO AO STEAM 20K CARDS",
     "AQUI APRENDEREMOS SOBRE A ISO 20000 DE FORMA INTERATIVA",
     "FUNCIONARA DA SEGUINTE FORMA:",
-    "HA 4 MAPAS, CADA UM CONTENDO 5 PERGUNTAS DO AMBIENTE DE TRABALHO",
-    "PARA CADA PERGUNTA VOCE TERA 5 OPÇÕES DE RESPOSTAS, CARDS, QUE ESTARAO NO SEU DECK",
-    "CADA PERGUNTA TERA UMA RESPOSTA CORRETA. CASO ESCOLHA O CARD ERRADO, PERDERA UMA VIDA. AO PERDER TODAS, REINICIA A FASE INTEIRA"
+    "HÁ 4 MAPAS, CADA UM CONTENDO 5 PERGUNTAS DO AMBIENTE DE TRABALHO",
+    "PARA CADA PERGUNTA VOCÊ TERÁ 5 OPÇÕES DE RESPOSTAS, CARDS, QUE ESTARAO NO SEU DECK",
+    "CADA PERGUNTA TERÁ UMA RESPOSTA CORRETA. CASO ESCOLHA O CARD ERRADO, PERDERÁ UMA VIDA. AO PERDER TODAS, REINICIA A FASE INTEIRA"
   ];
 
   const playSound = () => {
-    const audio = new Audio("/sounds/card_drop.mp3");
+    const audio = new Audio("/sounds/paper_flip.wav");
     audio.play();
   };
 
@@ -86,7 +86,7 @@ export default function TutorialPage() {
               alignItems: "center",
               zIndex: 100,
               padding: isMobile ? "20px 15px" : "40px",
-              minHeight: isMobile ? "45vh" : currentModal === 5 ? "530px" : "480px", // só um pouco maior
+              minHeight: isMobile ? "45vh" : currentModal === 5 ? "530px" : "480px",
               maxHeight: isMobile ? "60vh" : currentModal === 5 ? "630px" : "630px",
               overflowY: isMobile ? "auto" : "visible",
             }}
@@ -95,9 +95,13 @@ export default function TutorialPage() {
               <p
                 className="leading-relaxed text-center uppercase text-[#4e4540] max-w-[90%] sm:max-w-[550px] mx-auto break-words"
                 style={{ 
-                  fontSize: currentModal === 5 
-                    ? (isMobile ? '1.5rem' : '2rem') 
-                    : (isMobile ? '1.9rem' : '2.6rem'), 
+                  fontSize: currentModal === 5 && isMobile 
+                    ? '1.2rem'  // 🔹 texto menor no sexto modal mobile
+                    : currentModal === 5
+                      ? '2rem'
+                      : isMobile
+                        ? '1.9rem'
+                        : '2.6rem', 
                   lineHeight: isMobile ? (currentModal === 5 ? 1.7 : 1.9) : (currentModal === 5 ? 1.8 : 2)
                 }}
               >
@@ -106,7 +110,32 @@ export default function TutorialPage() {
 
               {currentModal === 5 && (
                 <div className="flex flex-row justify-center items-center gap-3 mt-4">
-                  <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
+                  {/* Engrenagem animada na ponta */}
+                  <motion.div
+                    className="relative"
+                    style={{ width: isMobile ? 32 : 50, height: isMobile ? 32 : 50 }}
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                  >
+                    <motion.img
+                      src="/images/gear_orange.png"
+                      alt="Engrenagem animada"
+                      className="absolute top-0 left-0"
+                      initial={{ opacity: 1 }}
+                      animate={{ opacity: [1, 0, 1], transitionEnd: { opacity: 1 } }}
+                      transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 0.5 }}
+                    />
+                    <motion.img
+                      src="/images/gear_gray.png"
+                      alt="Engrenagem animada"
+                      className="absolute top-0 left-0"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: [0, 1, 0], transitionEnd: { opacity: 0 } }}
+                      transition={{ repeat: Infinity, duration: 1.5, repeatDelay: 0.5 }}
+                    />
+                  </motion.div>
+
+                  {/* Engrenagem estática */}
                   <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
                   <Image src="/images/gear_orange.png" alt="Engrenagem" width={isMobile ? 32 : 50} height={isMobile ? 32 : 50} />
                 </div>
