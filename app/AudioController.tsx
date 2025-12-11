@@ -6,42 +6,66 @@ import { usePathname } from "next/navigation";
 export default function AudioController() {
   const pathname = usePathname();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const currentPhaseRef = useRef<number | null>(null);
 
-  function playMusic(path: string) {
+  function stopAudio() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      audioRef.current = null;
+    }
+  }
+
+  function playMusic(phase: number) {
+    stopAudio();
+
+    const audio = new Audio(`/sounds/fase${phase}.mp3`);
+    audio.volume = 0.4;
+    audio.loop = true;
+    audio.play().catch(() => {});
+    audioRef.current = audio;
+    currentPhaseRef.current = phase;
+  }
+
+  useEffect(() => {
     const regex = /^\/levels\/([0-9]+)$/;
-    const match = path.match(regex);
+    const match = pathname.match(regex);
 
-    // ❌ Se não for uma fase → parar música
     if (!match) {
-      audioRef.current?.pause();
+      stopAudio();
+      currentPhaseRef.current = null;
       return;
     }
 
     const phase = Number(match[1]);
+    if (currentPhaseRef.current !== phase) {
+      playMusic(phase);
+    }
 
-    // Para música anterior
-    audioRef.current?.pause();
+    const handleVisibility = () => {
+      if (document.visibilityState === "hidden") {
+        stopAudio();
+      } else if (document.visibilityState === "visible" && currentPhaseRef.current === phase) {
+        playMusic(phase);
+      }
+    };
 
-    // Cria nova trilha
-    const audio = new Audio(`/sounds/fase${phase}.mp3`);
-    audio.volume = 0.4;
-    audio.loop = true;
+    const handleBlur = () => stopAudio();
+    const handleFocus = () => {
+      if (currentPhaseRef.current === phase) playMusic(phase);
+    };
 
-    // Tenta tocar (em refresh funciona pois é interação direta)
-    audio.play().catch(() => {});
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("blur", handleBlur);
+    window.addEventListener("focus", handleFocus);
 
-    audioRef.current = audio;
-  }
-
-  // 🔥 roda sempre que a rota muda
-  useEffect(() => {
-    playMusic(pathname);
+    return () => {
+      stopAudio();
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("blur", handleBlur);
+      window.removeEventListener("focus", handleFocus);
+    };
   }, [pathname]);
-
-  // 🔥 roda no carregamento inicial (digitando URL ou dando F5)
-  useEffect(() => {
-    playMusic(window.location.pathname);
-  }, []);
 
   return null;
 }
