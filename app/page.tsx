@@ -65,7 +65,7 @@ export default function Home() {
         <motion.div className="w-full md:w-2/5 flex justify-center items-center font-game" variants={containerVariants}>
           <div className="flex flex-col items-center space-y-6">
             {/* BOTÃO GRANDE - JOGAR */}
-            <Link href="/levels/1">
+            <Link href="/tutorial">
               <motion.div
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
