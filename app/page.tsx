@@ -69,7 +69,7 @@ export default function Home() {
               <motion.div
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
-                className="border-2 border-brand-primary font-bold text-4xl text-brand-primary px-14 py-8 w-72 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
+                className="border-4 border-brand-primary font-bold text-4xl text-brand-primary px-14 py-8 w-72 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
                 variants={buttonVariants}
               >
                 JOGAR
@@ -82,13 +82,13 @@ export default function Home() {
                 <motion.div
                   onMouseEnter={() => setHoverEffect(true)}
                   onMouseLeave={() => setHoverEffect(false)}
-                  className="border-2 border-brand-primary font-bold text-3xl text-brand-primary px-12 py-6 w-64 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
+                  className="border-4 border-brand-primary font-bold text-3xl text-brand-primary px-12 py-6 w-64 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
                   variants={buttonVariants}
                 >
                   CRÉDITOS
                 </motion.div>
               </SheetTrigger>
-              <SheetContent className="border-2 border-r-0 rounded-l-xl border-brand-primary bg-brand-gray text-brand-light">
+              <SheetContent className="border-4 border-r-0 rounded-l-xl border-brand-primary bg-brand-gray text-brand-light">
                 <SheetHeader>
                   <SheetTitle className="text-brand-light text-2xl">CRÉDITOS</SheetTitle>
                 </SheetHeader>
@@ -124,7 +124,7 @@ export default function Home() {
               <motion.div
                 onMouseEnter={() => setHoverEffect(true)}
                 onMouseLeave={() => setHoverEffect(false)}
-                className="border-2 border-brand-primary font-bold text-2xl text-brand-primary px-8 py-5 w-52 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
+                className="border-4 border-brand-primary font-bold text-2xl text-brand-primary px-8 py-5 w-52 text-center rounded-b-4xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-xl hover:bg-brand-primary hover:text-black"
                 variants={buttonVariants}
               >
                 SAIR

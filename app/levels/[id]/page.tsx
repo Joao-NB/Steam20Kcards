@@ -38,6 +38,14 @@ export default function Page() {
   const [randomProps, setRandomProps] = useState<RandomProps[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
+  // 🔥 Desativa rolagem da página totalmente
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 1024);
     check();
@@ -263,7 +271,7 @@ export default function Page() {
         {/* FASE-X-Y e vidas MOBILE (acima das cartas) */}
         {isMobile && (
           <div className="flex flex-col items-center gap-2 mt-2">
-            <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: '1.25rem' }}>
+            <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: '1.3rem' }}>
               Fase {phase}-{current + 1}
             </h1>
             <div className="flex gap-2">
@@ -272,8 +280,8 @@ export default function Page() {
                   <Image
                     src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
                     alt="vida"
-                    width={32}
-                    height={32}
+                    width={36}
+                    height={36}
                   />
                 </motion.div>
               ))}
@@ -282,7 +290,7 @@ export default function Page() {
         )}
 
         {/* Cartas */}
-        <div className="w-full flex flex-wrap justify-center items-end gap-3 mt-4 px-4 relative min-h-[300px] overflow-visible">
+        <div className="w-full flex flex-wrap justify-center items-end gap-3 mt-14 px-4 relative min-h-[300px] overflow-visible">
           {question.options.map((opt, index) => {
             if (removedOptions.includes(index)) return null;
             const total = question.options.length;
@@ -324,11 +332,11 @@ export default function Page() {
                   perspective: 1200,
                   "--drop-volume": randomProps[index]?.volume ?? 0.3,
                   "--drop-pitch": randomProps[index]?.pitch ?? 1,
-                  width: isMobile ? '120px' : '176px',
-                  height: isMobile ? '160px' : '240px',
+                  width: isMobile ? '124px' : '176px',
+                  height: isMobile ? '164px' : '240px',
                 } as React.CSSProperties}
                 textStyle={{
-                  fontSize: isMobile ? '0.8rem' : '1rem',
+                  fontSize: isMobile ? '0.85rem' : '1rem',
                 }}
               />
             );
