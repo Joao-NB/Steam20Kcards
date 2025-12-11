@@ -92,9 +92,11 @@ export default function Page() {
     }));
     setRandomProps(props || []);
   }, [current, phaseQuestions]);
+
   useEffect(() => {
     const handlePopState = () => {
-      router.push("/"); // volta para a home
+      // usa replace pra não empilhar história ao redirecionar
+      router.replace("/");
     };
 
     window.addEventListener("popstate", handlePopState);
@@ -103,16 +105,6 @@ export default function Page() {
       window.removeEventListener("popstate", handlePopState);
     };
   }, [router]);
-  
-  // ⬆️ FIM DO TRECHO
-
-  function triggerGearSpin() {
-    gearsAnimation.start({
-      rotate: [0, 360],
-      transition: { duration: 0.8, ease: "easeInOut" },
-    });
-  }
-
 
   function triggerGearSpin() {
     gearsAnimation.start({
@@ -215,97 +207,77 @@ export default function Page() {
       </motion.div>
 
       {/* FASE STEAMPUNK - Desktop */}
-<div className="hidden lg:block fixed top-8 left-8 z-50">
-  <div className="relative">
-    <motion.div
-      initial={{ opacity: 0, y: 25, scaleY: 1 }}
-      animate={{
-        opacity: 1,
-        y: 0,
-        scaleY: [1, 1.04, 1],
-      }}
-      transition={{
-        opacity: { duration: 0.5, ease: "easeOut" },
-        y: { duration: 0.5, ease: "easeOut" },
-        scaleY: {
-          duration: 1.5,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        },
-      }}
-      className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3"
-    >
-      <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-      <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-      <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
-      <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+      <div className="hidden lg:block fixed top-8 left-8 z-50">
+        <div className="relative">
+          <motion.div
+            initial={{ opacity: 0, y: 25, scaleY: 1 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              scaleY: [1, 1.04, 1],
+            }}
+            transition={{
+              opacity: { duration: 0.5, ease: "easeOut" },
+              y: { duration: 0.5, ease: "easeOut" },
+              scaleY: {
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              },
+            }}
+            className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border-4 border-amber-900/50 rounded-md shadow-2xl px-6 py-3"
+          >
+            <div className="absolute top-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute top-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute bottom-1 left-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
+            <div className="absolute bottom-1 right-1 w-3 h-3 bg-amber-900 rounded-full border border-amber-800"></div>
 
-      <h1
-        className="text-3xl font-bold tracking-wider drop-shadow-lg"
+            <h1
+              className="text-3xl font-bold tracking-wider drop-shadow-lg"
+              style={{
+                color: "#d8603b",
+                textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
+              }}
+            >
+              FASE {phase}-{current + 1}
+            </h1>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* PAINEL LATERAL - Desktop */}
+      <aside
+        className="hidden lg:flex flex-col items-center justify-center relative"
         style={{
-          color: "#d8603b",
-          textShadow: "0 0 12px rgba(216,96,59,0.6), 0 2px 4px rgba(0,0,0,0.8)",
+          width: "240px",
+          height: "100vh",
+          marginLeft: "-100px",
         }}
       >
-        FASE {phase}-{current + 1}
-      </h1>
-    </motion.div>
-  </div>
-</div>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }} // animação de entrada
+          animate={{ opacity: 1, y: 0 }} // estado final fixo
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="relative flex flex-col items-center justify-center w-full h-full"
+        >
+          {/* Fundo */}
+          <div className="absolute w-full h-full top-0 left-0">
+            <Image src="/images/fundo_engrena.png" alt="Painel" fill style={{ objectFit: "contain" }} />
+          </div>
 
-
-
-     {/* PAINEL LATERAL - Desktop */}
-<aside
-  className="hidden lg:flex flex-col items-center justify-center relative"
-  style={{
-    width: "240px",
-    height: "100vh",
-    marginLeft: "-100px",
-  }}
->
-  <motion.div
-    initial={{ opacity: 0, y: -20 }}            // animação de entrada
-    animate={{ opacity: 1, y: 0 }}              // estado final fixo
-    transition={{ duration: 0.6, ease: "easeOut" }}
-    className="relative flex flex-col items-center justify-center w-full h-full"
-  >
-    {/* Fundo */}
-    <div className="absolute w-full h-full top-0 left-0">
-      <Image
-        src="/images/fundo_engrena.png"
-        alt="Painel"
-        fill
-        style={{ objectFit: "contain" }}
-      />
-    </div>
-
-    {/* Engrenagens / Vidas */}
-    <div
-      className="relative flex flex-col items-center justify-center w-full z-10"
-      style={{ top: "-12px", gap: "22px" }}
-    >
-      <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
-        {Array.from({ length: 3 }).map((_, v) => (
-          <motion.div
-            key={v}
-            animate={gearsAnimation}              // mantém a animação da engrenagem
-            style={{ width: 84, height: 84 }}
-          >
-            <Image
-              src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
-              alt="vida"
-              width={84}
-              height={84}
-            />
-          </motion.div>
-        ))}
-      </div>
-    </div>
-  </motion.div>
-</aside>
-
+          {/* Engrenagens / Vidas */}
+          <div className="relative flex flex-col items-center justify-center w-full z-10" style={{ top: "-12px", gap: "22px" }}>
+            <div className="flex flex-col items-center" style={{ marginLeft: "92px" }}>
+              {Array.from({ length: 3 }).map((_, v) => (
+                <motion.div key={v} animate={gearsAnimation} style={{ width: 84, height: 84 }}>
+                  <Image src={v < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"} alt="vida" width={84} height={84} />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </aside>
 
       {/* CONTEÚDO CENTRAL */}
       <main className="flex-1 flex flex-col justify-start items-center py-6 w-full relative">
@@ -317,11 +289,11 @@ export default function Page() {
           className="relative w-[90%] max-w-[850px] min-h-[95px] px-4 flex items-center justify-center text-center shadow-xl bg-center bg-cover z-50"
           style={{
             backgroundImage: "url('/textures/letreiro.jpg')",
-            marginTop: isMobile ? '6px' : '20px',
-            minHeight: isMobile ? '60px' : '95px',
+            marginTop: isMobile ? "6px" : "20px",
+            minHeight: isMobile ? "60px" : "95px",
           }}
         >
-          <span className={`text-black font-semibold ${isMobile ? 'text-lg' : 'text-xl'} ${!isMobile ? 'md:text-2xl' : ''}`}>
+          <span className={`text-black font-semibold ${isMobile ? "text-lg" : "text-xl"} ${!isMobile ? "md:text-2xl" : ""}`}>
             {question.question}
           </span>
         </motion.div>
@@ -329,18 +301,13 @@ export default function Page() {
         {/* FASE-X-Y e vidas MOBILE (acima das cartas) */}
         {isMobile && (
           <div className="flex flex-col items-center gap-2 mt-2">
-            <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: '1.3rem' }}>
+            <h1 className="text-black font-extrabold drop-shadow-2xl tracking-wider" style={{ fontSize: "1.3rem" }}>
               Fase {phase}-{current + 1}
             </h1>
             <div className="flex gap-2">
               {Array.from({ length: 3 }).map((_, i) => (
                 <motion.div key={i} animate={gearsAnimation}>
-                  <Image
-                    src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"}
-                    alt="vida"
-                    width={36}
-                    height={36}
-                  />
+                  <Image src={i < lives ? "/images/gear_orange.png" : "/images/gear_gray.png"} alt="vida" width={36} height={36} />
                 </motion.div>
               ))}
             </div>
@@ -386,15 +353,17 @@ export default function Page() {
                   animateRotate: rotate,
                   delay: index * 0.1,
                 }}
-                style={{
-                  perspective: 1200,
-                  "--drop-volume": randomProps[index]?.volume ?? 0.3,
-                  "--drop-pitch": randomProps[index]?.pitch ?? 1,
-                  width: isMobile ? '124px' : '176px',
-                  height: isMobile ? '164px' : '240px',
-                } as React.CSSProperties}
+                style={
+                  {
+                    perspective: 1200,
+                    "--drop-volume": randomProps[index]?.volume ?? 0.3,
+                    "--drop-pitch": randomProps[index]?.pitch ?? 1,
+                    width: isMobile ? "124px" : "176px",
+                    height: isMobile ? "164px" : "240px",
+                  } as React.CSSProperties
+                }
                 textStyle={{
-                  fontSize: isMobile ? '0.85rem' : '1rem',
+                  fontSize: isMobile ? "0.85rem" : "1rem",
                 }}
               />
             );
@@ -402,103 +371,82 @@ export default function Page() {
         </div>
 
         {/* Dialogs */}
-<Dialog open={isCorrect} onOpenChange={setIsCorrect}>
-  <DialogContent
-    onClick={() => setIsCorrect(false)}
-    className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
-    style={{
-      backgroundImage: "url('/images/fundo_modal.png')",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      width: "90%", // responsivo
-      maxWidth: "600px", // diminuiu no geral
-      height: "350px",
-      borderRadius: "12px",
-      padding: "0 30px",
-    }}
-  >
-    <DialogTitle
-      className="mb-6 text-center"
-      style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
-    >
-      RESPOSTA CORRETA!!
-    </DialogTitle>
-    <p
-      className="text-center"
-      style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
-    >
-      {feedback}
-    </p>
-  </DialogContent>
-</Dialog>
+        <Dialog open={isCorrect} onOpenChange={setIsCorrect}>
+          <DialogContent
+            onClick={() => setIsCorrect(false)}
+            className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
+            style={{
+              backgroundImage: "url('/images/fundo_modal.png')",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              width: "90%", // responsivo
+              maxWidth: "600px", // diminuiu no geral
+              height: "350px",
+              borderRadius: "12px",
+              padding: "0 30px",
+            }}
+          >
+            <DialogTitle className="mb-6 text-center" style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
+              RESPOSTA CORRETA!!
+            </DialogTitle>
+            <p className="text-center" style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
+              {feedback}
+            </p>
+          </DialogContent>
+        </Dialog>
 
-<Dialog open={isWrong} onOpenChange={setIsWrong}>
-  <DialogContent
-    onClick={() => setIsWrong(false)}
-    className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
-    style={{
-      backgroundImage: "url('/images/fundo_modal.png')",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "center",
-      width: "90%", // responsivo
-      maxWidth: "600px", // diminuiu no geral
-      height: "350px",
-      borderRadius: "12px",
-      padding: "0 30px",
-    }}
-  >
-    <DialogTitle
-      className="mb-6 text-center"
-      style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
-    >
-      RESPOSTA INCORRETA!
-    </DialogTitle>
-    <p
-      className="text-center"
-      style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
-    >
-      {feedback}
-    </p>
-  </DialogContent>
-</Dialog>
+        <Dialog open={isWrong} onOpenChange={setIsWrong}>
+          <DialogContent
+            onClick={() => setIsWrong(false)}
+            className="z-110 text-center flex flex-col justify-center items-center cursor-pointer"
+            style={{
+              backgroundImage: "url('/images/fundo_modal.png')",
+              backgroundSize: "cover",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "center",
+              width: "90%", // responsivo
+              maxWidth: "600px", // diminuiu no geral
+              height: "350px",
+              borderRadius: "12px",
+              padding: "0 30px",
+            }}
+          >
+            <DialogTitle className="mb-6 text-center" style={{ color: "#4e4540", fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
+              RESPOSTA INCORRETA!
+            </DialogTitle>
+            <p className="text-center" style={{ color: "#4e4540", fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
+              {feedback}
+            </p>
+          </DialogContent>
+        </Dialog>
 
-<Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
-  <DialogContent
-    className="z-110 text-center flex flex-col justify-center items-center"
-    style={{
-      backgroundImage: "url('/textures/mesa_western.jpg')",
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      width: "90%", // responsivo
-      maxWidth: "600px", // diminuiu no geral
-      height: "350px",
-      borderRadius: "12px",
-      padding: "0 30px",
-    }}
-  >
-    <DialogTitle
-      className="mb-6 text-center"
-      style={{ fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}
-    >
-      FIM DE FASE!
-    </DialogTitle>
-    <p
-      className="text-center"
-      style={{ fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}
-    >
-      Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...
-    </p>
-    <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-6 bg-brand-primary hover:bg-brand-primary-dark">
-      Próxima Fase
-    </Button>
-  </DialogContent>
-</Dialog>
-
-
-
+        <Dialog open={isPhaseFinished} onOpenChange={setIsPhaseFinished}>
+          <DialogContent
+            className="z-110 text-center flex flex-col justify-center items-center"
+            style={{
+              backgroundImage: "url('/textures/mesa_western.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              width: "90%", // responsivo
+              maxWidth: "600px", // diminuiu no geral
+              height: "350px",
+              borderRadius: "12px",
+              padding: "0 30px",
+            }}
+          >
+            <DialogTitle className="mb-6 text-center" style={{ fontSize: "2.5rem", lineHeight: "1.2", fontWeight: "normal" }}>
+              FIM DE FASE!
+            </DialogTitle>
+            <p className="text-center" style={{ fontSize: "2rem", lineHeight: "1.5", fontWeight: "normal" }}>
+              Você concluiu a Fase {phase}! Prepare-se para {nextPhase}...
+            </p>
+            <Button onClick={() => router.push(`/levels/${nextPhase}`)} className="mt-6 bg-brand-primary hover:bg-brand-primary-dark">
+              Próxima Fase
+            </Button>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );
